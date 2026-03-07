@@ -15,3 +15,124 @@
   border-color: rgba(255,255,255,0.3);
   color: #fff;
 }
+/* ── THE BRAIN ── */
+.brain-section { padding-bottom: 0; }
+.brain-section h2 { line-height: 1.15; }
+.brain-section em { color: #c9a84c; font-style: normal; }
+
+/* Pipeline */
+.pipeline { margin: 60px auto 80px; max-width: 900px; position: relative; }
+.pipeline-track { position: absolute; top: 28px; left: 60px; right: 60px; height: 2px; }
+.pipeline-line { width: 100%; height: 100%; background: #eee; position: relative; overflow: hidden; border-radius: 1px; }
+.pipeline-pulse { position: absolute; top: 0; left: -20%; width: 20%; height: 100%; background: linear-gradient(90deg, transparent, #c9a84c, transparent); animation: pipelinePulse 3s ease-in-out infinite; }
+@keyframes pipelinePulse { 0% { left: -20%; } 100% { left: 100%; } }
+.pipeline-nodes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative; }
+.pipeline-node { text-align: center; opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.pipeline-node.visible { opacity: 1; transform: translateY(0); }
+.node-ring {
+  width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 2px solid #eee; margin: 0 auto 16px; color: #555;
+  transition: all 0.4s ease;
+}
+.pipeline-node.active .node-ring { border-color: #c9a84c; color: #c9a84c; box-shadow: 0 0 0 8px rgba(201,168,76,0.08); }
+.pipeline-node h4 { font-size: 15px; font-weight: 700; color: #222; margin-bottom: 6px; }
+.pipeline-node p { font-size: 13px; color: #888; line-height: 1.55; max-width: 180px; margin: 0 auto; }
+
+/* Brain blocks */
+.brain-block { padding: 80px 0; }
+.brain-block.alt { background: #fafafa; }
+.brain-split { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.brain-split.reverse { direction: rtl; }
+.brain-split.reverse > * { direction: ltr; }
+.brain-tag { font-size: 10px; font-weight: 700; color: #c9a84c; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+.brain-text h3 { font-size: 28px; font-weight: 800; color: #111; letter-spacing: -0.03em; margin-bottom: 12px; }
+.brain-text p { font-size: 15px; color: #666; line-height: 1.7; margin-bottom: 24px; }
+
+/* Voice stats */
+.voice-stats { display: flex; gap: 32px; margin-bottom: 20px; }
+.voice-stat { display: flex; flex-direction: column; }
+.stat-num { font-size: 28px; font-weight: 800; color: #111; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.stat-label { font-size: 11px; color: #999; font-weight: 500; }
+
+/* Voice words */
+.voice-words { display: flex; flex-wrap: wrap; gap: 8px; }
+.word-tag { padding: 5px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; }
+.word-tag.sig { background: rgba(201,168,76,0.1); color: #a88930; }
+.word-tag.anti { background: rgba(220,38,38,0.06); color: #dc2626; text-decoration: line-through; }
+
+/* Waveform */
+.waveform-container { background: #111; border-radius: 16px; padding: 24px; overflow: hidden; }
+.waveform-label { text-align: center; font-size: 11px; color: #666; margin-top: 12px; }
+#waveCanvas { display: block; width: 100%; height: auto; }
+
+/* Circadian ring */
+.circadian-ring { position: relative; display: flex; justify-content: center; }
+.circadian-ring svg { filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06)); }
+.circ-label { font-size: 10px; fill: #bbb; font-weight: 500; }
+.circ-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.circ-energy { font-size: 32px; font-weight: 800; color: #111; letter-spacing: -0.02em; }
+.circ-mood { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+/* Persona active */
+.persona-active {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: #f5f5f5; border-radius: 12px; padding: 14px 18px;
+}
+.persona-dot { width: 10px; height: 10px; border-radius: 50%; background: #6dc992; box-shadow: 0 0 8px rgba(109,201,146,0.4); animation: dotPulse 2s ease infinite; }
+@keyframes dotPulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+.persona-name { font-size: 14px; font-weight: 700; color: #222; }
+.persona-time { font-size: 12px; color: #999; }
+.persona-traits { font-size: 12px; color: #888; font-style: italic; flex-basis: 100%; margin-left: 22px; }
+
+/* Emotion bars */
+.emotion-bars { display: flex; flex-direction: column; gap: 12px; }
+.emotion-bar { display: grid; grid-template-columns: 90px 1fr 40px; align-items: center; gap: 12px; }
+.ebar-label { font-size: 13px; font-weight: 500; color: #555; }
+.ebar-track { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+.ebar-fill { height: 100%; background: #c9a84c; border-radius: 3px; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.ebar-val { font-size: 12px; color: #999; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Typing demo */
+.typing-demo { background: #fff; border: 1px solid #eee; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+.typing-chrome { display: flex; align-items: center; gap: 6px; padding: 12px 16px; background: #fafafa; border-bottom: 1px solid #eee; }
+.typing-dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; }
+.typing-title { font-size: 11px; color: #999; margin-left: 8px; font-weight: 500; }
+.typing-body { padding: 20px; min-height: 140px; }
+.typing-meta { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.typing-to { font-size: 12px; color: #888; }
+.typing-to strong { color: #222; }
+.typing-persona { font-size: 11px; color: #c9a84c; font-weight: 600; }
+.typing-area { font-size: 14px; color: #222; line-height: 1.6; min-height: 60px; font-family: 'Figtree', sans-serif; }
+.typing-cursor { display: inline; color: #c9a84c; animation: blink 1s step-end infinite; font-weight: 300; }
+@keyframes blink { 50% { opacity: 0; } }
+.typing-footer { display: flex; justify-content: space-between; padding: 10px 16px; border-top: 1px solid #eee; }
+.typing-wpm { font-size: 11px; color: #bbb; font-variant-numeric: tabular-nums; }
+.typing-status { font-size: 11px; color: #c9a84c; font-weight: 600; }
+
+/* Simulation grid */
+.sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sim-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; background: #f5f5f5; }
+.sim-item svg { color: #555; flex-shrink: 0; }
+.sim-item span { font-size: 12px; color: #555; font-weight: 500; }
+
+/* Mouse demo */
+.mouse-demo { background: #fafafa; border-radius: 16px; padding: 24px; text-align: center; }
+.mouse-demo svg { display: block; margin: 0 auto; }
+.mouse-label { font-size: 11px; color: #999; margin-top: 12px; }
+
+/* Research bar */
+.research-bar {
+  margin-top: 60px; padding: 20px 28px; border-radius: 12px; background: #fafafa;
+  font-size: 13px; color: #888; line-height: 1.6; text-align: center;
+}
+.research-bar strong { color: #222; font-weight: 700; }
+.research-note { display: block; margin-top: 4px; font-size: 12px; color: #bbb; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .brain-split, .brain-split.reverse { grid-template-columns: 1fr; direction: ltr; }
+  .pipeline-nodes { grid-template-columns: 1fr 1fr; }
+  .pipeline-track { display: none; }
+  .voice-stats { flex-direction: column; gap: 12px; }
+  .sim-grid { grid-template-columns: 1fr; }
+}

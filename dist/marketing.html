@@ -24,6 +24,7 @@
           <div class="nav-links">
             <a href="#how">How it works</a>
             <a href="#features">Features</a>
+            <a href="#brain">The Brain</a>
             <a href="#compare">Compare</a>
             
           </div>
@@ -272,6 +273,211 @@
         </div>
       </section>
 
+      <!-- ── THE BRAIN ── -->
+      <section class="section brain-section" id="brain">
+        <div class="container">
+          <div class="label">THE BRAIN</div>
+          <h2>Four layers. One mind.<br>Indistinguishable from you.</h2>
+          <p class="subtitle">GhostPost doesn't generate messages. It <em>becomes</em> you — through a neural architecture that learns, adapts, and behaves like a real human across every platform.</p>
+        </div>
+
+        <!-- Neural Pipeline -->
+        <div class="container">
+          <div class="pipeline" id="pipeline">
+            <div class="pipeline-track">
+              <div class="pipeline-line"><div class="pipeline-pulse" id="pipelinePulse"></div></div>
+            </div>
+            <div class="pipeline-nodes">
+              <div class="pipeline-node" data-step="0">
+                <div class="node-ring"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg></div>
+                <h4>Observe</h4>
+                <p>Scans timelines, tags, and profiles across X, Instagram, and LinkedIn in real-time</p>
+              </div>
+              <div class="pipeline-node" data-step="1">
+                <div class="node-ring"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12"/><path d="M12 6v6l4 2"/></svg></div>
+                <h4>Understand</h4>
+                <p>Scores relevance, qualifies leads, matches to your voice profile and current mood</p>
+              </div>
+              <div class="pipeline-node" data-step="2">
+                <div class="node-ring"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+                <h4>Compose</h4>
+                <p>Generates replies in your voice — vocabulary, rhythm, punctuation, tone — with circadian modulation</p>
+              </div>
+              <div class="pipeline-node" data-step="3">
+                <div class="node-ring"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></div>
+                <h4>Deliver</h4>
+                <p>Types with human imperfections, clicks with natural mouse curves, posts at believable intervals</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voice DNA -->
+        <div class="brain-block" id="voiceDna">
+          <div class="container brain-split">
+            <div class="brain-text">
+              <div class="brain-tag">LAYER 1</div>
+              <h3>Voice DNA</h3>
+              <p>Two minutes of you talking. That's all it takes. Whisper transcription extracts 620+ unique words, maps sentence rhythm, identifies signature phrases, and builds a complete linguistic fingerprint.</p>
+              <div class="voice-stats">
+                <div class="voice-stat"><span class="stat-num" data-target="155">0</span><span class="stat-label">words per minute</span></div>
+                <div class="voice-stat"><span class="stat-num" data-target="12">0</span><span class="stat-label">avg sentence length</span></div>
+                <div class="voice-stat"><span class="stat-num" data-target="620">0</span><span class="stat-label">unique words mapped</span></div>
+              </div>
+              <div class="voice-words">
+                <span class="word-tag sig">"honestly"</span>
+                <span class="word-tag sig">"mate"</span>
+                <span class="word-tag sig">"ship it"</span>
+                <span class="word-tag sig">"solid"</span>
+                <span class="word-tag sig">"reckon"</span>
+                <span class="word-tag anti">"synergy"</span>
+                <span class="word-tag anti">"leverage"</span>
+                <span class="word-tag anti">"circle back"</span>
+              </div>
+            </div>
+            <div class="brain-visual">
+              <div class="waveform-container" id="waveform">
+                <canvas id="waveCanvas" width="400" height="200"></canvas>
+                <div class="waveform-label">Voice signature analysis</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Circadian Engine -->
+        <div class="brain-block alt" id="circadian">
+          <div class="container brain-split reverse">
+            <div class="brain-text">
+              <div class="brain-tag">LAYER 2</div>
+              <h3>Circadian Engine</h3>
+              <p>You don't talk the same way at 7am and 11pm. Neither does GhostPost. Eight time-window personas model your daily rhythm — energy, tone, response length, and engagement style shift naturally throughout the day.</p>
+              <div class="persona-active" id="activePersona">
+                <div class="persona-dot"></div>
+                <span class="persona-name">Work Mode</span>
+                <span class="persona-time">09:00 – 12:00</span>
+                <span class="persona-traits">Professional · Articulate · Peak energy</span>
+              </div>
+            </div>
+            <div class="brain-visual">
+              <div class="circadian-ring" id="circadianRing">
+                <svg viewBox="0 0 300 300" width="300" height="300">
+                  <circle cx="150" cy="150" r="120" fill="none" stroke="#eee" stroke-width="24" />
+                  <circle cx="150" cy="150" r="120" fill="none" stroke="url(#circGrad)" stroke-width="24" stroke-dasharray="754" stroke-dashoffset="0" stroke-linecap="round" id="circProgress" />
+                  <defs>
+                    <linearGradient id="circGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#e89aad" />
+                      <stop offset="15%" stop-color="#7ab4e0" />
+                      <stop offset="30%" stop-color="#6dc992" />
+                      <stop offset="45%" stop-color="#e0c064" />
+                      <stop offset="60%" stop-color="#b48ad6" />
+                      <stop offset="75%" stop-color="#a0a0b4" />
+                      <stop offset="90%" stop-color="#e09868" />
+                      <stop offset="100%" stop-color="#d08080" />
+                    </linearGradient>
+                  </defs>
+                  <!-- Hour markers -->
+                  <text x="150" y="22" text-anchor="middle" class="circ-label">00</text>
+                  <text x="264" y="90" text-anchor="middle" class="circ-label">03</text>
+                  <text x="280" y="155" text-anchor="middle" class="circ-label">06</text>
+                  <text x="264" y="220" text-anchor="middle" class="circ-label">09</text>
+                  <text x="150" y="290" text-anchor="middle" class="circ-label">12</text>
+                  <text x="36" y="220" text-anchor="middle" class="circ-label">15</text>
+                  <text x="20" y="155" text-anchor="middle" class="circ-label">18</text>
+                  <text x="36" y="90" text-anchor="middle" class="circ-label">21</text>
+                  <!-- Needle -->
+                  <line x1="150" y1="150" x2="150" y2="50" stroke="#333" stroke-width="2" stroke-linecap="round" id="circNeedle" />
+                  <circle cx="150" cy="150" r="5" fill="#333" />
+                </svg>
+                <div class="circ-center">
+                  <div class="circ-energy" id="circEnergy">85%</div>
+                  <div class="circ-mood" id="circMood">energy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emotional State -->
+        <div class="brain-block" id="emotional">
+          <div class="container brain-split">
+            <div class="brain-text">
+              <div class="brain-tag">LAYER 3</div>
+              <h3>Emotional State</h3>
+              <p>Some days you're sharp and witty. Other days you're quieter. GhostPost models daily mood variations, life event carry-over, and emotional drift — so your digital twin has bad days, great days, and everything in between.</p>
+              <div class="emotion-bars" id="emotionBars">
+                <div class="emotion-bar"><span class="ebar-label">Humour</span><div class="ebar-track"><div class="ebar-fill" data-width="70" style="width:0%"></div></div><span class="ebar-val">7/10</span></div>
+                <div class="emotion-bar"><span class="ebar-label">Passion</span><div class="ebar-track"><div class="ebar-fill" data-width="90" style="width:0%"></div></div><span class="ebar-val">9/10</span></div>
+                <div class="emotion-bar"><span class="ebar-label">Sarcasm</span><div class="ebar-track"><div class="ebar-fill" data-width="50" style="width:0%"></div></div><span class="ebar-val">5/10</span></div>
+                <div class="emotion-bar"><span class="ebar-label">Supportive</span><div class="ebar-track"><div class="ebar-fill" data-width="70" style="width:0%"></div></div><span class="ebar-val">7/10</span></div>
+                <div class="emotion-bar"><span class="ebar-label">Vulnerability</span><div class="ebar-track"><div class="ebar-fill" data-width="30" style="width:0%"></div></div><span class="ebar-val">3/10</span></div>
+              </div>
+            </div>
+            <div class="brain-visual">
+              <div class="typing-demo" id="typingDemo">
+                <div class="typing-chrome">
+                  <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+                  <span class="typing-title">Reply composer</span>
+                </div>
+                <div class="typing-body">
+                  <div class="typing-meta">
+                    <span class="typing-to">Replying to <strong>@paulg</strong></span>
+                    <span class="typing-persona">Work Mode · 85% energy</span>
+                  </div>
+                  <div class="typing-area" id="typingArea"></div>
+                  <div class="typing-cursor" id="typingCursor">|</div>
+                </div>
+                <div class="typing-footer">
+                  <span class="typing-wpm" id="typingWpm">0 wpm</span>
+                  <span class="typing-status" id="typingStatus">composing...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Human Simulation -->
+        <div class="brain-block alt" id="humanSim">
+          <div class="container brain-split reverse">
+            <div class="brain-text">
+              <div class="brain-tag">LAYER 4</div>
+              <h3>Human Simulation</h3>
+              <p>The final layer makes it undetectable. Every keystroke follows Gaussian timing distributions. Mouse movements use Bezier curves with natural overshoot. Actions follow Poisson-distributed intervals. Occasional typos get backspaced and corrected — because real humans make mistakes.</p>
+              <div class="sim-grid">
+                <div class="sim-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg><span>Gaussian keystroke intervals</span></div>
+                <div class="sim-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19V5m0 14-4-4m4 4 4-4"/></svg><span>Bezier mouse curves</span></div>
+                <div class="sim-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>Poisson action timing</span></div>
+                <div class="sim-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span>Deliberate typo correction</span></div>
+                <div class="sim-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span>Stealth fingerprinting</span></div>
+                <div class="sim-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 0 0-9-9m9 9a9 9 0 0 1-9 9m9-9H3m9-9a9 9 0 0 0-9 9m9-9c1.66 0 3 4.03 3 9s-1.34 9-3 9m0-18c-1.66 0-3 4.03-3 9s1.34 9 3 9"/></svg><span>Residential proxy rotation</span></div>
+              </div>
+            </div>
+            <div class="brain-visual">
+              <div class="mouse-demo" id="mouseDemo">
+                <svg width="360" height="240" viewBox="0 0 360 240" id="mouseSvg">
+                  <path d="" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="4 4" id="mousePath" />
+                  <path d="" fill="none" stroke="#333" stroke-width="2" id="mouseTrail" />
+                  <circle cx="0" cy="0" r="6" fill="#c9a84c" opacity="0.9" id="mouseDot" />
+                  <rect x="280" y="180" width="60" height="30" rx="6" fill="none" stroke="#ccc" stroke-width="1" />
+                  <text x="310" y="200" text-anchor="middle" fill="#999" font-size="11">Send</text>
+                </svg>
+                <div class="mouse-label">Bezier curve with natural overshoot</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Research backing -->
+        <div class="container">
+          <div class="research-bar">
+            <span>Built on research by</span>
+            <strong>Golder & Macy</strong> <span>·</span>
+            <strong>Barabási</strong> <span>·</span>
+            <strong>Mark et al.</strong> <span>·</span>
+            <strong>Dabbish & Kraut</strong>
+            <span class="research-note">— behavioural authenticity modelled from peer-reviewed studies on human circadian patterns, typing dynamics, and online engagement rhythms.</span>
+          </div>
+        </div>
+      </section>
       <section class="section soft" id="compare">
         <div class="container narrow">
           <div class="label">WHY GHOSTPOST</div>
@@ -312,5 +518,6 @@
         <div class="foot-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
       </div>
     </footer>
+      <script src="/assets/brain.js"></script>
   </body>
 </html>
