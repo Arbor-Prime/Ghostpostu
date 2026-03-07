@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GhostPost</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/assets/index-Z5pTEf3C.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Des3tyh1.css">
+  </head>
+  <body>
+    <nav class="top-nav">
+      <div class="nav-inner">
+        <a class="brand" href="#">
+          <span class="logo-mark">G</span>
+          <span class="brand-text">GhostPost</span>
+        </a>
+        <div class="nav-right">
+          <div class="nav-links">
+            <a href="#how">How it works</a>
+            <a href="#features">Features</a>
+            <a href="#compare">Compare</a>
+            
+          </div>
+          <a class="nav-login" href="/login">Login</a>
+          <a class="nav-cta" href="/signup">Get started</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            <span>Now with Instagram &amp; LinkedIn</span>
+          </div>
+          <h1>
+            It doesn't post for you.<br />
+            It posts <em>as you.</em>
+          </h1>
+          <p>
+            GhostPost learns your voice from a two-minute recording, then runs social media outreach
+            that's indistinguishable from you doing it yourself.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/signup">Get started free</a>
+            <a class="btn btn-secondary" href="#demo">Watch it work</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-wrap" id="demo">
+        <div class="demo-shell">
+          <div class="demo-chrome">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="chrome-title">GhostPost's Computer</div>
+          </div>
+
+          <div class="demo-body">
+            <aside class="action-log">
+              <div class="log-head">Outreach: Dojo Cards — Nottingham Restaurants</div>
+              <div class="log-list" id="logList"></div>
+              <div class="log-input">
+                <div class="chat-input"><span>📎</span><span>Message GhostPost</span></div>
+              </div>
+            </aside>
+
+            <div class="browser-pane">
+              <div class="browser-head">
+                <div class="browser-id">
+                  <span class="logo-mark">G</span>
+                  <div>
+                    <div class="id-title">GhostPost's Computer</div>
+                    <div class="id-sub">GhostPost is using Browser</div>
+                  </div>
+                </div>
+                <button class="take-control">Take Control</button>
+              </div>
+              <div class="browser-status" id="browserStatus">Initialising…</div>
+              <div class="url-row">
+                <button>←</button><button>→</button><button>↻</button>
+                <div class="url-field" id="urlField">instagram.com</div>
+              </div>
+
+              <!-- ── SCREEN: Explore / Tag results ── -->
+              <div class="ig-screen" id="screenExplore">
+                <div class="ig-topbar">
+                  <span class="ig-wordmark">Instagram</span>
+                  <div class="ig-topbar-icons"><span>🔍</span><span>❤️</span><span>✉️</span></div>
+                </div>
+                <div class="ig-tag-header">
+                  <div class="ig-tag-avatar"></div>
+                  <div class="ig-tag-info">
+                    <div class="ig-tag-name">#nottinghamfood</div>
+                    <div class="ig-tag-count">48.2K posts</div>
+                    <div class="ig-tag-follow-btn">Follow</div>
+                  </div>
+                </div>
+                <div class="ig-tabs">
+                  <span class="ig-tab active">Top</span>
+                  <span class="ig-tab">Recent</span>
+                  <span class="ig-tab">Reels</span>
+                </div>
+                <div class="ig-grid" id="exploreGrid">
+                  <div class="ig-post" style="background:#e8d5c4"></div>
+                  <div class="ig-post" style="background:#c8dfc8"></div>
+                  <div class="ig-post" style="background:#f0c4a0"></div>
+                  <div class="ig-post" style="background:#d4c4e0"></div>
+                  <div class="ig-post" style="background:#c4d4e8"></div>
+                  <div class="ig-post" style="background:#e8c4c4"></div>
+                  <div class="ig-post" style="background:#dce8c4"></div>
+                  <div class="ig-post" style="background:#e8d4b0"></div>
+                  <div class="ig-post" style="background:#c4e0d8"></div>
+                </div>
+              </div>
+
+              <!-- ── SCREEN: Restaurant Profile ── -->
+              <div class="ig-screen hidden" id="screenProfile">
+                <div class="ig-topbar">
+                  <span class="ig-back">←</span>
+                  <span class="ig-profile-username-top" id="profileUsernameTop">nottingham_bites</span>
+                  <span class="ig-topbar-more">⋯</span>
+                </div>
+                <div class="ig-profile-header">
+                  <div class="ig-profile-pic"></div>
+                  <div class="ig-profile-stats">
+                    <div class="ig-stat"><strong>84</strong><span>posts</span></div>
+                    <div class="ig-stat"><strong id="profileFollowers">2.4K</strong><span>followers</span></div>
+                    <div class="ig-stat"><strong>310</strong><span>following</span></div>
+                  </div>
+                </div>
+                <div class="ig-profile-bio">
+                  <div class="ig-profile-name" id="profileName">Nottingham Bites 🍽️</div>
+                  <div class="ig-profile-desc">Independent restaurant · Hockley, Nottingham<br>Brunch · Lunch · Dinner · Walk-ins welcome</div>
+                </div>
+                <div class="ig-profile-actions">
+                  <div class="ig-action-btn">Follow</div>
+                  <div class="ig-action-btn">Message</div>
+                  <div class="ig-action-btn ig-action-icon">▾</div>
+                </div>
+                <div class="ig-highlights">
+                  <div class="ig-highlight"><div class="ig-hl-ring"></div><span>Menu</span></div>
+                  <div class="ig-highlight"><div class="ig-hl-ring"></div><span>Events</span></div>
+                  <div class="ig-highlight"><div class="ig-hl-ring"></div><span>Team</span></div>
+                </div>
+                <div class="ig-grid ig-grid-profile">
+                  <div class="ig-post" style="background:#e8c49c"></div>
+                  <div class="ig-post" style="background:#c8dab8"></div>
+                  <div class="ig-post" style="background:#f0b890"></div>
+                  <div class="ig-post" style="background:#d4c8e4"></div>
+                  <div class="ig-post" style="background:#c4d8ec"></div>
+                  <div class="ig-post" style="background:#ecc8c8"></div>
+                </div>
+              </div>
+
+              <!-- ── SCREEN: DM Thread ── -->
+              <div class="ig-screen hidden" id="screenDM">
+                <div class="ig-top">
+                  <span class="ig-back">←</span>
+                  <span class="avatar"></span>
+                  <div class="ig-user-info">
+                    <span class="user" id="dmUsername">nottingham_bites</span>
+                    <span class="ig-active">Active now</span>
+                  </div>
+                  <div class="ig-top-actions">
+                    <span class="ig-icon">📞</span>
+                    <span class="ig-icon">📹</span>
+                  </div>
+                </div>
+                <div class="ig-chat" id="igChat">
+                  <div class="ig-timestamp">Today 11:42 AM</div>
+                </div>
+                <div class="ig-compose">
+                  <span class="ig-compose-icon">😊</span>
+                  <span class="ig-compose-text" id="igCompose">Message...</span>
+                  <span class="ig-compose-icon">🎤</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-footer">
+            <div class="left">
+              <button id="btnPrev">⏮</button><button id="btnPlay">⏸</button><button id="btnNext">⏭</button>
+              <div class="progress"><span id="progressBar" style="width:0%"></span></div>
+            </div>
+            <div class="right">
+              <span class="mini-pulse"></span>
+              <span class="work">GhostPost is working: DMing restaurants in Nottingham</span>
+              <span class="count" id="dmCount">0 / 5</span>
+              <span class="live"><i></i>live</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section soft" id="how">
+        <div class="container">
+          <div class="label">HOW IT WORKS</div>
+          <h2>Teach it your voice. Set your targets. Walk away.</h2>
+          <p class="subtitle">
+            From a short recording to fully autonomous outreach, GhostPost mirrors how you actually speak and act.
+          </p>
+          <div class="card-grid four">
+            <article class="card">
+              <div class="icon">🎙</div>
+              <h3>Record your voice</h3>
+              <p>Speak naturally for two minutes. Whisper transcription and NLP extracts your vocabulary, tone, sentence patterns, and topics.</p>
+            </article>
+            <article class="card">
+              <div class="icon">🔗</div>
+              <h3>Connect accounts</h3>
+              <p>Log into Instagram, LinkedIn, or X through the visible browser. Cookie sessions persist - no API keys or developer accounts.</p>
+            </article>
+            <article class="card">
+              <div class="icon">🎯</div>
+              <h3>Define targets</h3>
+              <p>Pick verticals, locations, and message templates. GhostPost searches, qualifies leads, and queues personalised outreach.</p>
+            </article>
+            <article class="card">
+              <div class="icon">👁</div>
+              <h3>Watch or walk away</h3>
+              <p>The browser streams live. Take control to solve CAPTCHAs or respond. Or close your laptop - GhostPost keeps working.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="container">
+          <div class="label">CAPABILITIES</div>
+          <h2>Not a scheduler. Not a bot. A digital twin.</h2>
+          <p class="subtitle">Designed to behave like you do, with observability and control built in.</p>
+          <div class="card-grid six feature">
+            <article class="card">
+              <div class="icon">🧠</div>
+              <h3>Voice-learned personality</h3>
+              <p>Your voice profile shapes every message - vocabulary, sentence length, punctuation habits, emoji usage, topics you gravitate to.</p>
+            </article>
+            <article class="card">
+              <div class="icon">🖥</div>
+              <h3>Visible browser</h3>
+              <p>A real Chromium instance streams to your dashboard. Not headless. Not hidden. You see every click, scroll, and keystroke.</p>
+            </article>
+            <article class="card">
+              <div class="icon">⏱</div>
+              <h3>Circadian rhythm engine</h3>
+              <p>Eight time-window personas model a real daily pattern - morning commute energy, post-lunch dip, evening wind-down.</p>
+            </article>
+            <article class="card">
+              <div class="icon">✍️</div>
+              <h3>Human typing simulation</h3>
+              <p>Gaussian keystroke intervals. Occasional typos with backspace corrections. Bezier mouse curves with overshoot.</p>
+            </article>
+            <article class="card">
+              <div class="icon">🛡</div>
+              <h3>Anti-detection architecture</h3>
+              <p>Stealth fingerprinting, residential proxy rotation, Poisson-distributed action timing. Built to pass ML behavioural analysis.</p>
+            </article>
+            <article class="card">
+              <div class="icon">📊</div>
+              <h3>Lead qualification</h3>
+              <p>Built-in business vertical mapping with 70+ categories. Auto-classifies leads as target, conditional, or skip.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section soft" id="compare">
+        <div class="container narrow">
+          <div class="label">WHY GHOSTPOST</div>
+          <h2>The gap between you and a bot is everything</h2>
+          <table class="compare-table">
+            <thead>
+              <tr><th></th><th>GhostPost</th><th>DM tools</th><th>Manual</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Learns your actual voice &amp; tone</td><td class="chk">✓</td><td class="dash">–</td><td class="chk">✓</td></tr>
+              <tr><td>Visible browser you can take over</td><td class="chk">✓</td><td class="dash">–</td><td class="chk">✓</td></tr>
+              <tr><td>Human typing with typos &amp; corrections</td><td class="chk">✓</td><td class="dash">–</td><td class="chk">✓</td></tr>
+              <tr><td>Circadian activity patterns</td><td class="chk">✓</td><td class="dash">–</td><td class="dash">–</td></tr>
+              <tr><td>Scales across multiple accounts</td><td class="chk">✓</td><td class="chk">✓</td><td class="dash">–</td></tr>
+              <tr><td>Runs autonomously while you sleep</td><td class="chk">✓</td><td class="chk">✓</td><td class="dash">–</td></tr>
+              <tr><td>Account safety by design</td><td class="chk">✓</td><td class="dash">–</td><td class="chk">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="final-cta" id="pricing">
+        <div class="cta-glow"></div>
+        <div class="container cta">
+          <h2>Your voice. Their inbox. <span>Zero effort.</span></h2>
+          <p>GhostPost is in private beta. Create your account and start running outreach in under two minutes.</p>
+          <a href="/signup" class="btn cta-btn">Get started free →</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container foot">
+        <a class="brand" href="#">
+          <span class="logo-mark">G</span>
+          <span class="brand-text">GhostPost</span>
+        </a>
+        <div class="foot-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+      </div>
+    </footer>
+  </body>
+</html>
