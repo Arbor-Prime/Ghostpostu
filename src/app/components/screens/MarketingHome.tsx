@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import '../../styles/marketing.css';
+import '../../../styles/marketing.css';
 
 const RESTAURANTS = [
   { slug: 'nottingham_bites', handle: '@nottingham_bites', name: 'Nottingham Bites', followers: '2.4K', posts: '84' },

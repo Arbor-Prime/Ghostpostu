@@ -1,11 +1,13 @@
 import { createBrowserRouter } from 'react-router';
 import { AppLayout } from './components/layout/AppLayout';
+import { MarketingHome } from './components/screens/MarketingHome';
+import { Login } from './components/screens/Login';
+import { Signup } from './components/screens/Signup';
 import { Welcome } from './components/screens/Welcome';
 import { Recording } from './components/screens/Recording';
 import { Processing } from './components/screens/Processing';
 import { VoiceProfile } from './components/screens/VoiceProfile';
 import { PersonaSchedule } from './components/screens/PersonaSchedule';
-import { XAuth } from './components/screens/XAuth';
 import { Dashboard } from './components/screens/Dashboard';
 import { BrowserView } from './components/screens/BrowserView';
 import { Approvals } from './components/screens/Approvals';
@@ -16,14 +18,19 @@ import { Simulation } from './components/screens/Simulation';
 import { Settings } from './components/screens/Settings';
 
 export const router = createBrowserRouter([
-  // Onboarding screens (no sidebar)
-  { path: '/', Component: Welcome },
+  // Public routes (no auth required)
+  { path: '/', Component: MarketingHome },
+  { path: '/login', Component: Login },
+  { path: '/signup', Component: Signup },
+
+  // Onboarding routes (auth required, no sidebar)
+  { path: '/onboarding/welcome', Component: Welcome },
   { path: '/onboarding/recording', Component: Recording },
   { path: '/onboarding/processing', Component: Processing },
   { path: '/onboarding/voice-profile', Component: VoiceProfile },
   { path: '/onboarding/persona-schedule', Component: PersonaSchedule },
-  { path: '/onboarding/x-auth', Component: XAuth },
-  // Main app screens (with sidebar)
+
+  // Main app routes (auth required, sidebar layout)
   {
     Component: AppLayout,
     children: [
