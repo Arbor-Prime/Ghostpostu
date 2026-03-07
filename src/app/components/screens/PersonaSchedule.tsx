@@ -77,7 +77,7 @@ export function PersonaSchedule() {
           <GhostButton
             variant="gold"
             size="lg"
-            onClick={() => navigate('/onboarding/x-auth')}
+            onClick={async () => { try { await fetch('/api/auth/onboarding-complete', { method: 'PATCH', credentials: 'include' }); } catch(e) {} navigate('/dashboard'); }}
             iconRight={<ArrowRight size={14} strokeWidth={2.5} />}
           >
             Generate schedule
