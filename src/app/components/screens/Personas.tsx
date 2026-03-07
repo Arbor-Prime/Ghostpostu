@@ -1,57 +1,87 @@
-const personas = [
-  { name: 'Early Riser', time: '05:00 – 07:00', desc: 'Quiet, reflective, still waking up. Low energy, minimal engagement.', energy: 25, tones: ['Calm', 'Brief'], color: '#e89aad', active: false },
-  { name: 'Morning Drive', time: '07:00 – 09:00', desc: 'Getting into gear. Slightly more alert, focused on priorities.', energy: 45, tones: ['Focused', 'Direct'], color: '#7ab4e0', active: false },
-  { name: 'Work Mode', time: '09:00 – 12:00', desc: 'Peak professional mode. Sharp, articulate, on-topic.', energy: 80, tones: ['Professional', 'Articulate'], color: '#6dc992', active: false },
-  { name: 'Midday Break', time: '12:00 – 13:30', desc: 'Relaxed lunch energy. More casual, slightly distracted.', energy: 55, tones: ['Casual', 'Warm'], color: '#e0c064', active: false },
-  { name: 'Afternoon Push', time: '13:30 – 17:00', desc: 'Back to work but energy is dipping. Still productive but briefer.', energy: 65, tones: ['Efficient', 'Helpful'], color: '#b48ad6', active: true },
-  { name: 'Wind Down', time: '17:00 – 19:30', desc: 'Transitioning out of work. More personal, relaxed tone.', energy: 50, tones: ['Relaxed', 'Personal'], color: '#a0a0b4', active: false },
-  { name: 'Evening Social', time: '19:30 – 22:00', desc: 'Most social window. Humorous, opinionated, engaging.', energy: 70, tones: ['Playful', 'Opinionated'], color: '#e09868', active: false },
-  { name: 'Night Owl', time: '22:00 – 05:00', desc: 'Late night mode. Sparse, sometimes philosophical.', energy: 20, tones: ['Sparse', 'Thoughtful'], color: '#d08080', active: false },
+import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
+import { api } from '../../lib/api';
+
+const PERSONA_WINDOWS = [
+  { name: 'Early Riser', hours: [5, 6], time: '05:00 – 07:00', color: '#e89aad', traits: ['Calm', 'Brief'] },
+  { name: 'Morning Drive', hours: [7, 8], time: '07:00 – 09:00', color: '#7ab4e0', traits: ['Focused', 'Direct'] },
+  { name: 'Work Mode', hours: [9, 10, 11], time: '09:00 – 12:00', color: '#6dc992', traits: ['Professional', 'Articulate'] },
+  { name: 'Midday Break', hours: [12, 13], time: '12:00 – 13:30', color: '#e0c064', traits: ['Casual', 'Warm'] },
+  { name: 'Afternoon Push', hours: [14, 15, 16], time: '13:30 – 17:00', color: '#b48ad6', traits: ['Efficient', 'Helpful'] },
+  { name: 'Wind Down', hours: [17, 18, 19], time: '17:00 – 19:30', color: '#a0a0b4', traits: ['Relaxed', 'Personal'] },
+  { name: 'Evening Social', hours: [20, 21], time: '19:30 – 22:00', color: '#e09868', traits: ['Playful', 'Opinionated'] },
+  { name: 'Night Owl', hours: [22, 23, 0, 1, 2, 3, 4], time: '22:00 – 05:00', color: '#d08080', traits: ['Sparse', 'Thoughtful'] },
 ];
 
 export function Personas() {
+  const [circadianData, setCircadianData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/persona/circadian')
+      .then(data => setCircadianData(Array.isArray(data) ? data : []))
+      .catch(() => setCircadianData([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const getWindowEnergy = (w: typeof PERSONA_WINDOWS[0]) => {
+    if (circadianData.length === 0) return 0;
+    const entries = circadianData.filter(d => w.hours.includes(d.hour));
+    if (entries.length === 0) return 0;
+    return Math.round(entries.reduce((sum, e) => sum + (Number(e.energy) || 0), 0) / entries.length * 100);
+  };
+
+  const getWindowMood = (w: typeof PERSONA_WINDOWS[0]) => {
+    if (circadianData.length === 0) return 'unknown';
+    const entries = circadianData.filter(d => w.hours.includes(d.hour));
+    return entries[0]?.mood || 'relaxed';
+  };
+
+  if (loading) {
+    return (<div className="flex items-center justify-center p-20"><Loader2 size={24} className="text-[#d4a853] animate-spin" /></div>);
+  }
+
+  if (circadianData.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: 40, color: '#999' }}>
+        <p style={{ fontSize: 14, marginBottom: 8 }}>No persona data yet.</p>
+        <p style={{ fontSize: 12 }}>Complete voice onboarding to generate your circadian personas.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <div className="mb-5">
-        <div className="flex overflow-hidden" style={{ borderRadius: 10, height: 32, border: '1px solid #4a4a4a' }}>
-          {personas.map((p) => (
-            <div key={p.name} className="flex-1 flex items-center justify-center relative" style={{ backgroundColor: p.color }}>
-              <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(0,0,0,0.45)' }}>{p.time.split(' – ')[0]}</span>
-              {p.active && <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ background: '#d4a853' }} />}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="space-y-3">
-        {personas.map((p) => (
-          <div key={p.name} style={{
-            background: '#383838', borderRadius: 14, padding: '18px 20px',
-            border: '1px solid #4a4a4a',
-            borderLeft: p.active ? `3px solid ${p.color}` : '3px solid transparent',
-          }}>
-            <div className="flex items-center gap-2.5 mb-0.5">
-              <div className="w-3.5 h-3.5 rounded-full shrink-0" style={{ background: p.color, boxShadow: `0 0 6px ${p.color}60` }} />
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: '#e5e5e5' }}>{p.name}</h3>
-              {p.active && <span style={{ fontSize: 10, fontWeight: 600, color: '#d4a853', background: 'rgba(212,168,83,0.12)', borderRadius: 20, padding: '3px 10px' }}>Active now</span>}
-            </div>
-            <span style={{ fontSize: 11, fontWeight: 500, color: '#999999', marginLeft: 24 }} className="block">{p.time}</span>
-            <p style={{ fontSize: 13, color: '#aaaaaa', lineHeight: 1.5, marginTop: 6 }}>{p.desc}</p>
-            <div className="mt-4 flex items-center gap-6">
-              <div className="flex-1 max-w-[200px]">
-                <div className="flex justify-between mb-1">
-                  <span style={{ fontSize: 10, fontWeight: 500, color: '#999999' }}>Energy</span>
-                  <span style={{ fontSize: 10, fontWeight: 600, color: '#e5e5e5' }}>{p.energy}%</span>
-                </div>
-                <div className="w-full h-1.5" style={{ borderRadius: 3, background: '#4a4a4a' }}>
-                  <div className="h-full" style={{ width: `${p.energy}%`, background: p.color, borderRadius: 3 }} />
-                </div>
-              </div>
-              <div className="flex gap-1.5">
-                {p.tones.map((t) => <span key={t} style={{ borderRadius: 20, padding: '3px 10px', fontSize: 10, fontWeight: 500, color: '#aaaaaa', background: '#444444', border: '1px solid #505050' }}>{t}</span>)}
-              </div>
-            </div>
+      <div className="flex mb-6" style={{ borderRadius: 10, overflow: 'hidden', height: 32 }}>
+        {PERSONA_WINDOWS.map((w) => (
+          <div key={w.name} style={{ flex: w.hours.length, background: w.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>{w.time.split(' – ')[0]}</span>
           </div>
         ))}
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {PERSONA_WINDOWS.map((w) => {
+          const energy = getWindowEnergy(w);
+          const mood = getWindowMood(w);
+          return (
+            <div key={w.name} style={{ background: '#383838', borderRadius: 16, padding: 18, border: '1px solid #4a4a4a' }}>
+              <div className="flex items-center gap-2.5 mb-2">
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: w.color }} />
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: '#e5e5e5' }}>{w.name}</h3>
+              </div>
+              <p style={{ fontSize: 11, color: '#999', marginBottom: 8 }}>{w.time}</p>
+              <p style={{ fontSize: 12, color: '#aaa', marginBottom: 10 }}>Mood: {mood}. Energy: {energy}%</p>
+              <div style={{ height: 5, background: '#555', borderRadius: 3, marginBottom: 10 }}>
+                <div style={{ height: '100%', width: `${energy}%`, background: w.color, borderRadius: 3 }} />
+              </div>
+              <div className="flex gap-2">
+                {w.traits.map(t => (
+                  <span key={t} style={{ padding: '3px 10px', borderRadius: 8, fontSize: 10, fontWeight: 500, background: '#444', color: '#ccc', border: '1px solid #555' }}>{t}</span>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

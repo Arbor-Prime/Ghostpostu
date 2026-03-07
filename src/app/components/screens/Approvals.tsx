@@ -23,7 +23,7 @@ export function Approvals() {
     if (!user) return;
     try {
       const status = filter === 'all' ? 'pending' : filter;
-      const data = await api.get(`/drafts/${user.id}?status=${status}`);
+      const data = await api.get(`/drafts?status=${status}`);
       setDrafts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Failed to fetch drafts:', err);

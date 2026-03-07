@@ -24,7 +24,7 @@ export function TrackedProfiles() {
   const fetchProfiles = async () => {
     if (!user) return;
     try {
-      const data = await api.get(`/tracked-profiles/${user.id}`);
+      const data = await api.get('/tracked-profiles');
       setProfiles(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Failed to fetch profiles:', err);
@@ -38,7 +38,7 @@ export function TrackedProfiles() {
   const handleAdd = async () => {
     const handle = prompt('Enter X handle (without @):');
     if (!handle || !user) return;
-    await api.post(`/tracked-profiles/${user.id}`, { x_handle: handle });
+    await api.post('/tracked-profiles', { x_handle: handle });
     fetchProfiles();
   };
 
