@@ -32,7 +32,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   // If onboarding not complete, redirect to onboarding (unless already there)
   const isOnboarding = location.pathname.startsWith('/onboarding');
   if (!user.onboarding_complete && !isOnboarding) {
-    return <Navigate to="/onboarding/recording" replace />;
+    return <Navigate to="/onboarding/welcome" replace />;
   }
 
   return <>{children}</>;

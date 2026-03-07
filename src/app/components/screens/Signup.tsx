@@ -37,7 +37,7 @@ export function Signup() {
     setLoading(true);
     try {
       await signup(name, email, password);
-      navigate('/onboarding/recording');
+      navigate('/onboarding/welcome');
     } catch (err: any) {
       setError(err.message || 'Registration failed');
     } finally {
