@@ -1,27 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Search, Play, MoreVertical } from 'lucide-react';
 import { GhostButton } from '../ui/GhostButton';
+import { useAuth } from '../../lib/auth-context';
+import { api } from '../../lib/api';
 
-const profiles = [
-  { handle: '@elonmusk', scanned: 847, opportunities: 23, lastScanned: '2m ago', priority: 'high' },
-  { handle: '@paulg', scanned: 612, opportunities: 18, lastScanned: '5m ago', priority: 'high' },
-  { handle: '@naval', scanned: 534, opportunities: 15, lastScanned: '8m ago', priority: 'high' },
-  { handle: '@sama', scanned: 423, opportunities: 12, lastScanned: '12m ago', priority: 'normal' },
-  { handle: '@pmarca', scanned: 389, opportunities: 11, lastScanned: '15m ago', priority: 'normal' },
-  { handle: '@levelsio', scanned: 312, opportunities: 9, lastScanned: '20m ago', priority: 'normal' },
-  { handle: '@dhaborat', scanned: 245, opportunities: 7, lastScanned: '25m ago', priority: 'normal' },
-  { handle: '@rauchg', scanned: 198, opportunities: 5, lastScanned: '30m ago', priority: 'normal' },
-  { handle: '@balajis', scanned: 156, opportunities: 4, lastScanned: '35m ago', priority: 'normal' },
-];
+function timeAgo(dateStr: string | null): string {
+  if (!dateStr) return 'Never';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
 
 export function TrackedProfiles() {
+  const { user } = useAuth();
+  const [profiles, setProfiles] = useState<any[]>([]);
   const [search, setSearch] = useState('');
-  const filtered = profiles.filter((p) => p.handle.toLowerCase().includes(search.toLowerCase()));
+  const [loading, setLoading] = useState(true);
+
+  const fetchProfiles = async () => {
+    if (!user) return;
+    try {
+      const data = await api.get(`/tracked-profiles/${user.id}`);
+      setProfiles(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to fetch profiles:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchProfiles(); }, [user]);
+
+  const handleAdd = async () => {
+    const handle = prompt('Enter X handle (without @):');
+    if (!handle || !user) return;
+    await api.post(`/tracked-profiles/${user.id}`, { x_handle: handle });
+    fetchProfiles();
+  };
+
+  const handleScan = async (id: number) => {
+    await api.post(`/tracked-profiles/${id}/scan`);
+    fetchProfiles();
+  };
+
+  const filtered = profiles.filter((p) => p.x_handle?.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-5">
-        <GhostButton variant="gold" size="md" icon={<Plus size={14} strokeWidth={2.5} />}>
+        <GhostButton variant="gold" size="md" icon={<Plus size={14} strokeWidth={2.5} />} onClick={handleAdd}>
           Add Profile
         </GhostButton>
         <div className="flex-1 max-w-xs relative">
@@ -29,40 +60,46 @@ export function TrackedProfiles() {
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search profiles..."
             className="w-full placeholder:text-[#777777] text-[#e5e5e5] focus:outline-none transition-colors"
             style={{ background: '#3a3a3a', border: '1px solid #4a4a4a', borderRadius: 10, paddingLeft: 34, paddingRight: 14, paddingTop: 8, paddingBottom: 8, fontSize: 12 }}
-            onFocus={(e) => e.target.style.borderColor = '#d4a853'} onBlur={(e) => e.target.style.borderColor = '#4a4a4a'} />
+            onFocus={(e) => (e.target.style.borderColor = '#d4a853')} onBlur={(e) => (e.target.style.borderColor = '#4a4a4a')} />
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-3">
-        {filtered.map((p) => (
-          <div key={p.handle} className="relative" style={{ background: '#383838', borderRadius: 16, padding: '18px 18px 16px', border: '1px solid #4a4a4a' }}>
-            <div className="absolute top-4 right-4 p-1 rounded-lg hover:bg-[#444444] cursor-pointer transition-colors">
-              <MoreVertical size={14} strokeWidth={1.5} className="text-[#999999]" />
-            </div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center justify-center" style={{ width: 38, height: 38, borderRadius: 11, background: '#444444', border: '1px solid #505050' }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: '#aaaaaa' }}>{p.handle.slice(1, 3).toUpperCase()}</span>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: 40, color: '#999' }}>Loading profiles...</div>
+      ) : filtered.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: 40, color: '#999' }}>No tracked profiles yet. Add one to get started.</div>
+      ) : (
+        <div className="grid grid-cols-3 gap-3">
+          {filtered.map((p) => (
+            <div key={p.id} className="relative" style={{ background: '#383838', borderRadius: 16, padding: '18px 18px 16px', border: '1px solid #4a4a4a' }}>
+              <div className="absolute top-4 right-4 p-1 rounded-lg cursor-pointer transition-colors" style={{ background: 'transparent' }}>
+                <MoreVertical size={14} strokeWidth={1.5} style={{ color: '#999999' }} />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#e5e5e5' }}>{p.handle}</span>
-                  <div className="rounded-full" style={{ width: 7, height: 7, background: p.priority === 'high' ? '#d4a853' : '#555555' }} />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center" style={{ width: 38, height: 38, borderRadius: 11, background: '#444444', border: '1px solid #505050' }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#aaaaaa' }}>{(p.x_handle || '??').slice(0, 2).toUpperCase()}</span>
                 </div>
-                <span style={{ fontSize: 11, color: '#999999' }}>𝕏</span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#e5e5e5' }}>@{p.x_handle}</span>
+                    <div className="rounded-full" style={{ width: 7, height: 7, background: p.priority <= 3 ? '#d4a853' : '#555555' }} />
+                  </div>
+                  <span style={{ fontSize: 11, color: '#999999' }}>Priority {p.priority}</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div><div style={{ fontSize: 20, fontWeight: 700, color: '#e5e5e5', lineHeight: 1 }}>{parseInt(p.tweet_count || '0').toLocaleString()}</div><div style={{ fontSize: 10, color: '#999999', fontWeight: 500, marginTop: 2 }}>Scanned</div></div>
+                <div><div style={{ fontSize: 20, fontWeight: 700, color: '#e5e5e5', lineHeight: 1 }}>{parseInt(p.pending_opportunities || '0').toLocaleString()}</div><div style={{ fontSize: 10, color: '#999999', fontWeight: 500, marginTop: 2 }}>Opportunities</div></div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span style={{ fontSize: 11, color: '#999999' }}>Last: {timeAgo(p.last_scanned_at || p.added_at)}</span>
+                <GhostButton variant="gold" size="sm" icon={<Play size={9} strokeWidth={2.5} />} onClick={() => handleScan(p.id)}>
+                  Scan
+                </GhostButton>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div><div style={{ fontSize: 20, fontWeight: 700, color: '#e5e5e5', lineHeight: 1 }}>{p.scanned}</div><div style={{ fontSize: 10, color: '#999999', fontWeight: 500, marginTop: 2 }}>Scanned</div></div>
-              <div><div style={{ fontSize: 20, fontWeight: 700, color: '#e5e5e5', lineHeight: 1 }}>{p.opportunities}</div><div style={{ fontSize: 10, color: '#999999', fontWeight: 500, marginTop: 2 }}>Opportunities</div></div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span style={{ fontSize: 11, color: '#999999' }}>Last: {p.lastScanned}</span>
-              <GhostButton variant="gold" size="sm" icon={<Play size={9} strokeWidth={2.5} fill="currentColor" />}>
-                Scan
-              </GhostButton>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

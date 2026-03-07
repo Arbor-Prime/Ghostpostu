@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../lib/auth-context';
+import { api } from '../../lib/api';
 import { Save, RotateCcw, CreditCard, Pencil } from 'lucide-react';
 import { GhostButton } from '../ui/GhostButton';
 
@@ -19,6 +21,25 @@ function Toggle({ enabled }: { enabled: boolean }) {
 
 export function Settings() {
   const [activeCategory, setActiveCategory] = useState('general');
+  const { user } = useAuth();
+  const [healthData, setHealthData] = useState<any>(null);
+  const [connectionStatus, setConnectionStatus] = useState<any>(null);
+
+  useEffect(() => {
+    if (activeCategory === 'system-health') {
+      api.get('/health').then(setHealthData).catch(() => {});
+    }
+    if (activeCategory === 'integrations') {
+      api.get('/cookie-import/status').then(setConnectionStatus).catch(() => {});
+    }
+  }, [activeCategory]);
+
+  const healthServices = healthData ? [
+    { name: 'Database', status: healthData.services?.database === 'connected' ? 'running' : 'down' },
+    { name: 'Redis', status: healthData.services?.redis === 'connected' ? 'running' : 'down' },
+    { name: 'Ollama', status: healthData.services?.ollama?.includes('running') ? 'running' : 'down' },
+    { name: 'Playwright', status: healthData.services?.playwright === 'available' ? 'running' : 'down' },
+  ] : services;
 
   return (
     <div className="flex h-full -mx-7 -mb-7">
@@ -49,7 +70,7 @@ export function Settings() {
           <div className="max-w-lg">
             <h2 className="mb-6" style={{ fontSize: 18, fontWeight: 800, color: '#e5e5e5', letterSpacing: '-0.02em' }}>General</h2>
             <div className="space-y-4">
-              {[{ label: 'Display Name', type: 'text', defaultValue: 'John Doe' }, { label: 'Email', type: 'email', defaultValue: 'john@example.com' }].map((f) => (
+              {[{ label: 'Display Name', type: 'text', defaultValue: user?.name || '' }, { label: 'Email', type: 'email', defaultValue: user?.email || '' }].map((f) => (
                 <div key={f.label}>
                   <label className="block mb-1.5" style={{ fontSize: 11, fontWeight: 600, color: '#cccccc' }}>{f.label}</label>
                   <input type={f.type} defaultValue={f.defaultValue} className="w-full focus:outline-none text-[#e5e5e5] transition-colors" style={{ background: '#353535', border: '1px solid #4a4a4a', borderRadius: 10, padding: '9px 14px', fontSize: 12 }} onFocus={(e) => e.target.style.borderColor = '#d4a853'} onBlur={(e) => e.target.style.borderColor = '#4a4a4a'} />
@@ -77,7 +98,7 @@ export function Settings() {
           <div className="max-w-lg">
             <h2 className="mb-6" style={{ fontSize: 18, fontWeight: 800, color: '#e5e5e5', letterSpacing: '-0.02em' }}>System Health</h2>
             <div style={{ background: '#383838', borderRadius: 14, overflow: 'hidden', border: '1px solid #4a4a4a' }}>
-              {services.map((s, i) => (
+              {healthServices.map((s, i) => (
                 <div key={s.name} className="flex items-center justify-between" style={{ padding: '14px 18px', borderBottom: i !== services.length - 1 ? '1px solid #4a4a4a' : 'none' }}>
                   <span style={{ fontSize: 13, fontWeight: 500, color: '#cccccc' }}>{s.name}</span>
                   <div className="flex items-center gap-2">
@@ -158,7 +179,7 @@ export function Settings() {
                   </div>
                   <div>
                     <span className="block" style={{ fontSize: 13, fontWeight: 600, color: '#e5e5e5' }}>X (Twitter)</span>
-                    <span style={{ fontSize: 11, color: '#22c55e' }}>Connected as @johndoe</span>
+                    <span style={{ fontSize: 11, color: '#22c55e' }}>Connected as @{connectionStatus?.username || 'unknown'}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
