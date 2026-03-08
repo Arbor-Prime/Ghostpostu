@@ -30,7 +30,7 @@ export function Settings() {
       api.get('/health').then(setHealthData).catch(() => {});
     }
     if (activeCategory === 'integrations') {
-      api.get('/cookie-import/status').then(setConnectionStatus).catch(() => {});
+      api.get('/auth/me').then(d => setConnectionStatus(d.user?.x_auth_status === 'active' ? { connected: true, username: d.user?.x_username } : null)).catch(() => {});
     }
   }, [activeCategory]);
 
@@ -179,13 +179,21 @@ export function Settings() {
                   </div>
                   <div>
                     <span className="block" style={{ fontSize: 13, fontWeight: 600, color: '#e5e5e5' }}>X (Twitter)</span>
-                    <span style={{ fontSize: 11, color: '#22c55e' }}>Connected as @{connectionStatus?.username || 'unknown'}</span>
+                    {connectionStatus ? (
+                      <span style={{ fontSize: 11, color: '#22c55e' }}>Connected as @{connectionStatus.username}</span>
+                    ) : (
+                      <span style={{ fontSize: 11, color: '#888' }}>Not connected — use Browser View to log in</span>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 6px rgba(34,197,94,0.4)' }} />
-                  <span style={{ fontSize: 12, fontWeight: 500, color: '#22c55e' }}>Active</span>
-                </div>
+                {connectionStatus ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 6px rgba(34,197,94,0.4)' }} />
+                    <span style={{ fontSize: 12, fontWeight: 500, color: '#22c55e' }}>Active</span>
+                  </div>
+                ) : (
+                  <span style={{ fontSize: 11, fontWeight: 500, color: '#888', background: '#444', borderRadius: 20, padding: '4px 12px' }}>Set up</span>
+                )}
               </div>
             </div>
           </div>
