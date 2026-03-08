@@ -19,14 +19,14 @@ export function Dashboard() {
 
   useEffect(() => {
     if (!user) return;
-    api.get('/stats/dashboard')
+    api.get(`/stats/dashboard/${user.id}`)
       .then(setDashData)
       .catch(() => {
         // Fallback: try individual endpoints
         Promise.all([
           api.get('/observer/stats').catch(() => ({})),
-          api.get('/opportunities/stats').catch(() => ({})),
-          api.get('/posted/stats').catch(() => ({})),
+          api.get(`/opportunities/${user.id}/stats`).catch(() => ({})),
+          api.get(`/posted/${user.id}/stats`).catch(() => ({})),
         ]).then(([obs, opps, posted]) => {
           setDashData({
             stats: {

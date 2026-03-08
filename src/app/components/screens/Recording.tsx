@@ -102,7 +102,7 @@ export function Recording() {
     navigate('/onboarding/processing');
 
     try {
-      await api.upload('/voice/upload', formData);
+      await api.upload(`/voice/upload?userId=${user?.id}`, formData);
     } catch (err) {
       console.error('Voice upload failed:', err);
     }

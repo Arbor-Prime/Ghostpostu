@@ -4,15 +4,17 @@ import { ArrowRight, SlidersHorizontal, Loader2 } from 'lucide-react';
 import { GhostPostLogo } from '../layout/GhostPostLogo';
 import { GhostButton } from '../ui/GhostButton';
 import { api } from '../../lib/api';
+import { useAuth } from '../../lib/auth-context';
 
 export function VoiceProfile() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get('/voice/profile')
+    api.get(`/voice/profile/${user?.id}`)
       .then(data => setProfile(data))
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
@@ -43,7 +45,7 @@ export function VoiceProfile() {
           <p style={{ fontSize: 13, color: '#999', marginBottom: 20 }}>
             {error || 'Your voice profile is still being generated. This usually takes 30-60 seconds.'}
           </p>
-          <GhostButton variant="gold" size="md" onClick={() => { setLoading(true); setError(''); api.get('/voice/profile').then(setProfile).catch(e => setError(e.message)).finally(() => setLoading(false)); }}>
+          <GhostButton variant="gold" size="md" onClick={() => { setLoading(true); setError(''); api.get(`/voice/profile/${user?.id}`).then(setProfile).catch(e => setError(e.message)).finally(() => setLoading(false)); }}>
             Check again
           </GhostButton>
         </div>
