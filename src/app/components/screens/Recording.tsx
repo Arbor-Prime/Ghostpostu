@@ -21,6 +21,11 @@ export function Recording() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const levelRef = useRef<number>(0);
+  const levelAnimRef = useRef<number>(0);
+  const [audioLevel, setAudioLevel] = useState(0);
 
   useEffect(() => {
     if (isRecording && !isPaused) { intervalRef.current = setInterval(() => setSeconds((s) => s + 1), 1000); }
@@ -35,7 +40,15 @@ export function Recording() {
   const startRecording = async () => {
     setError('');
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          sampleRate: 48000,
+          channelCount: 1,
+        }
+      });
       streamRef.current = stream;
 
       const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
@@ -44,7 +57,7 @@ export function Recording() {
           ? 'audio/webm'
           : 'audio/mp4';
 
-      const recorder = new MediaRecorder(stream, { mimeType });
+      const recorder = new MediaRecorder(stream, { mimeType, audioBitsPerSecond: 128000 });
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
 
@@ -54,6 +67,27 @@ export function Recording() {
 
       recorder.start(1000);
       setIsRecording(true);
+
+      // Audio level analyser for visual feedback
+      const audioCtx = new AudioContext();
+      audioCtxRef.current = audioCtx;
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+      analyserRef.current = analyser;
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      const updateLevel = () => {
+        if (!analyserRef.current) return;
+        analyserRef.current.getByteFrequencyData(dataArray);
+        const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+        const normalized = Math.min(1, avg / 80);
+        levelRef.current = normalized;
+        setAudioLevel(normalized);
+        levelAnimRef.current = requestAnimationFrame(updateLevel);
+      };
+      levelAnimRef.current = requestAnimationFrame(updateLevel);
     } catch (err: any) {
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
         setError('Microphone access denied. Please allow microphone access in your browser settings and try again.');
@@ -84,6 +118,10 @@ export function Recording() {
   const handleDone = async () => {
     // Kill timer IMMEDIATELY — don't wait for React state batching
     if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+    if (levelAnimRef.current) { cancelAnimationFrame(levelAnimRef.current); levelAnimRef.current = 0; }
+    if (audioCtxRef.current) { audioCtxRef.current.close().catch(() => {}); audioCtxRef.current = null; }
+    analyserRef.current = null;
+    setAudioLevel(0);
     setIsRecording(false);
     setIsPaused(false);
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
@@ -104,6 +142,7 @@ export function Recording() {
       return;
     }
     const blob = new Blob(chunksRef.current, { type: mediaRecorderRef.current?.mimeType || 'audio/webm' });
+    console.log(`[Recording] Blob: ${(blob.size / 1024).toFixed(0)}KB, ${chunksRef.current.length} chunks, type: ${blob.type}`);
     const formData = new FormData();
     formData.append('audio', blob, 'recording.webm');
     formData.append('userId', String(user?.id));
@@ -138,7 +177,8 @@ export function Recording() {
 
         <div className="relative mb-6">
           {isRecording && !isPaused && <div className="absolute inset-[-8px] rounded-full animate-ping opacity-20" style={{ border: '2px solid #d4a853' }} />}
-          <div className="flex items-center justify-center" style={{ width: 110, height: 110, borderRadius: '50%', border: isRecording ? '2px solid #d4a853' : '2px solid #505050', background: isRecording ? 'rgba(212,168,83,0.04)' : '#3a3a3a' }}>
+          {isRecording && <div className="absolute rounded-full" style={{ inset: -4 - audioLevel * 20, border: `2px solid rgba(212,168,83,${0.1 + audioLevel * 0.5})`, borderRadius: '50%', transition: 'all 0.1s ease' }} />}
+          <div className="flex items-center justify-center" style={{ width: 110, height: 110, borderRadius: '50%', border: isRecording ? '2px solid #d4a853' : '2px solid #505050', background: isRecording ? `rgba(212,168,83,${0.04 + audioLevel * 0.08})` : '#3a3a3a' }}>
             <Mic size={34} strokeWidth={1.5} className={isRecording ? 'text-[#d4a853]' : 'text-[#999999]'} />
           </div>
         </div>
