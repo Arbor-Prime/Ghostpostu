@@ -20,7 +20,7 @@ export function Personas() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get(`/persona/circadian/${user?.id}`)
+    api.get('/persona/circadian')
       .then(data => setCircadianData(Array.isArray(data) ? data : []))
       .catch(() => setCircadianData([]))
       .finally(() => setLoading(false));

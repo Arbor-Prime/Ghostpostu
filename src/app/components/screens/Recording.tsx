@@ -145,10 +145,9 @@ export function Recording() {
     console.log(`[Recording] Blob: ${(blob.size / 1024).toFixed(0)}KB, ${chunksRef.current.length} chunks, type: ${blob.type}`);
     const formData = new FormData();
     formData.append('audio', blob, 'recording.webm');
-    formData.append('userId', String(user?.id));
 
     try {
-      await api.upload(`/voice/upload?userId=${user?.id}`, formData);
+      await api.upload('/voice/upload', formData);
       console.log('[Recording] Upload complete, navigating...');
       navigate('/onboarding/processing');
     } catch (err) {

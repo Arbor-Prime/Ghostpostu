@@ -24,7 +24,7 @@ export function TrackedProfiles() {
   const fetchProfiles = async () => {
     if (!user) return;
     try {
-      const data = await api.get(`/tracked-profiles/${user.id}`);
+      const data = await api.get('/tracked-profiles');
       setProfiles(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Failed to fetch profiles:', err);
@@ -43,7 +43,7 @@ export function TrackedProfiles() {
     if (!newHandle.trim() || !user) return;
     setAdding(true);
     try {
-      await api.post(`/tracked-profiles/${user.id}`, { x_handle: newHandle.trim().replace('@', '') });
+      await api.post('/tracked-profiles', { x_handle: newHandle.trim().replace('@', '') });
       setNewHandle('');
       setShowAdd(false);
       fetchProfiles();

@@ -17,7 +17,7 @@ export function VoiceProfile() {
   const fetchProfile = async () => {
     if (!user) return;
     try {
-      const data = await api.get(`/voice/profile/${user.id}`);
+      const data = await api.get('/voice/profile');
       const vp = data.voice_profile;
       const st = data.voice_onboarding_status;
       if (st === 'processing') { setStatus('processing'); return; }

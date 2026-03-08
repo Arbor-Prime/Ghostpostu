@@ -22,7 +22,7 @@ export function PersonaSchedule() {
 
   const handleGenerate = async () => {
     try {
-      await api.post(`/persona/generate/${user?.id}`);
+      await api.post('/persona/generate');
     } catch(e) {}
     try {
       await api.patch('/auth/onboarding-complete');

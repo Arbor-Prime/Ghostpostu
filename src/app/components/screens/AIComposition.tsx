@@ -13,7 +13,7 @@ export function AIComposition() {
   const [draft, setDraft] = useState('');
 
   useEffect(() => {
-    api.get(`/stats/topic-breakdown/${user?.id}`)
+    api.get('/stats/topic-breakdown')
       .then(data => setTopics(data.topics || []))
       .catch(() => {})
       .finally(() => setLoading(false));
