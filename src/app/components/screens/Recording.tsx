@@ -82,6 +82,8 @@ export function Recording() {
   };
 
   const handleDone = async () => {
+    setIsRecording(false);
+    setIsPaused(false);
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop();
     }
@@ -94,6 +96,11 @@ export function Recording() {
     }
 
     setUploading(true);
+    if (!user?.id) {
+      setError('Not logged in. Please refresh and try again.');
+      setUploading(false);
+      return;
+    }
     const blob = new Blob(chunksRef.current, { type: mediaRecorderRef.current?.mimeType || 'audio/webm' });
     const formData = new FormData();
     formData.append('audio', blob, 'recording.webm');
