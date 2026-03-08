@@ -197,10 +197,9 @@ export function Settings() {
             <div style={{ background: '#383838', borderRadius: 14, padding: '18px 20px', border: '1px solid #4a4a4a' }}>
               <div className="flex items-center justify-between mb-3">
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#e5e5e5' }}>Current Plan</span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#d4a853', background: 'rgba(212,168,83,0.1)', borderRadius: 20, padding: '4px 12px' }}>Pro</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#22c55e', background: 'rgba(34,197,94,0.1)', borderRadius: 20, padding: '4px 12px' }}>Beta</span>
               </div>
-              <p className="mb-4" style={{ fontSize: 12, color: '#999999' }}>Your next billing date is April 7, 2026. You'll be charged £29/month.</p>
-              <GhostButton variant="glass" size="md" icon={<CreditCard size={13} strokeWidth={1.5} />}>Manage Subscription</GhostButton>
+              <p style={{ fontSize: 12, color: '#999999' }}>You're on the free beta. Paid plans coming soon.</p>
             </div>
           </div>
         )}

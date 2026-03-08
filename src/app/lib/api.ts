@@ -11,8 +11,14 @@ async function request(path: string, options: RequestInit = {}) {
   });
 
   if (res.status === 401) {
-    // Only redirect if we're not already on a public page
-    if (!['/login', '/signup', '/'].includes(window.location.pathname)) {
+    // Don't redirect for auth check calls - let auth context handle it
+    if (path === '/auth/me') {
+      throw new Error('Not authenticated');
+    }
+    // Only redirect for actual app requests when user should be logged in
+    const publicPaths = ['/login', '/signup', '/', '/onboarding'];
+    const isPublic = publicPaths.some(p => window.location.pathname.startsWith(p));
+    if (!isPublic) {
       window.location.href = '/login';
     }
     throw new Error('Unauthorized');
@@ -51,17 +57,14 @@ export const api = {
   delete: (path: string) =>
     request(path, { method: 'DELETE' }),
 
-  // For file uploads (voice recording)
   upload: async (path: string, formData: FormData) => {
     const res = await fetch(`${API_BASE}${path}`, {
       method: 'POST',
       credentials: 'include',
       body: formData,
-      // Don't set Content-Type — browser sets it with boundary for multipart
     });
 
     if (res.status === 401) {
-      window.location.href = '/login';
       throw new Error('Unauthorized');
     }
 
