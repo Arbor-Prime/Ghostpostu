@@ -82,6 +82,8 @@ export function Recording() {
   };
 
   const handleDone = async () => {
+    // Kill timer IMMEDIATELY — don't wait for React state batching
+    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
     setIsRecording(false);
     setIsPaused(false);
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
