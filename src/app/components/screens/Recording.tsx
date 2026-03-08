@@ -99,16 +99,21 @@ export function Recording() {
       source.connect(analyser);
       analyserRef.current = analyser;
 
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      const dataArray = new Uint8Array(analyser.fftSize);
       const waveArray = new Uint8Array(analyser.fftSize);
 
       const updateLevel = () => {
         if (!analyserRef.current) return;
 
-        // Frequency data for level
-        analyserRef.current.getByteFrequencyData(dataArray);
-        const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-        const normalized = Math.min(1, avg / 60);
+        // Time-domain RMS for accurate voice level
+        analyserRef.current.getByteTimeDomainData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          const v = (dataArray[i] - 128) / 128;
+          sum += v * v;
+        }
+        const rms = Math.sqrt(sum / dataArray.length);
+        const normalized = Math.min(1, rms * 5);
         setAudioLevel(normalized);
 
         // Track peak
@@ -133,7 +138,7 @@ export function Recording() {
 
       // Low audio warning after 10 seconds
       lowAudioTimer.current = setTimeout(() => {
-        if (peakTracker.current < 0.08) {
+        if (peakTracker.current < 0.02) {
           setLowAudioWarning(true);
         }
       }, 10000);
@@ -209,9 +214,9 @@ export function Recording() {
   // Mic quality indicator
   const getMicStatus = () => {
     if (!isRecording) return { text: 'Press Record to begin', color: '#666' };
-    if (audioLevel > 0.3) return { text: 'Great — I can hear you clearly', color: '#22c55e' };
-    if (audioLevel > 0.1) return { text: 'Good — keep talking', color: '#d4a853' };
-    if (audioLevel > 0.03) return { text: 'Quiet — try speaking louder or move closer', color: '#f59e0b' };
+    if (audioLevel > 0.15) return { text: 'Great — I can hear you clearly', color: '#22c55e' };
+    if (audioLevel > 0.05) return { text: 'Good — keep talking', color: '#d4a853' };
+    if (audioLevel > 0.01) return { text: 'Quiet — try speaking louder or move closer', color: '#f59e0b' };
     return { text: 'Very quiet — check your microphone', color: '#ef4444' };
   };
 
