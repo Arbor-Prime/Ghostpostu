@@ -99,12 +99,14 @@ export function Recording() {
     formData.append('audio', blob, 'recording.webm');
     formData.append('userId', String(user?.id));
 
-    navigate('/onboarding/processing');
-
     try {
       await api.upload(`/voice/upload?userId=${user?.id}`, formData);
+      console.log('[Recording] Upload complete, navigating...');
+      navigate('/onboarding/processing');
     } catch (err) {
       console.error('Voice upload failed:', err);
+      setError('Upload failed: ' + (err as Error).message);
+      setUploading(false);
     }
   };
 
