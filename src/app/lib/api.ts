@@ -24,6 +24,11 @@ async function request(path: string, options: RequestInit = {}) {
     throw new Error('Unauthorized');
   }
 
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new Error(`Server returned ${res.status} — please try again.`);
+  }
+
   const data = await res.json();
 
   if (!res.ok) {
@@ -65,7 +70,12 @@ export const api = {
     });
 
     if (res.status === 401) {
-      throw new Error('Unauthorized');
+      throw new Error('Not logged in. Please refresh the page and try again.');
+    }
+
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`Server returned ${res.status} — please wait a moment and try again.`);
     }
 
     const data = await res.json();
