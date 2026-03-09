@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { Mic, Check, Pause, Square, AlertTriangle } from 'lucide-react';
+import { Mic, Check, Pause, Square, AlertTriangle, Upload } from 'lucide-react';
 import { GhostPostLogo } from '../layout/GhostPostLogo';
 import { GhostButton } from '../ui/GhostButton';
 import { useAuth } from '../../lib/auth-context';
@@ -38,6 +38,50 @@ export function Recording() {
   const levelAnimRef = useRef<number>(0);
   const peakTracker = useRef(0);
   const lowAudioTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Accept common audio formats
+    const validTypes = ['audio/webm', 'audio/mp4', 'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/x-m4a', 'audio/aac'];
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    const validExts = ['webm', 'mp4', 'm4a', 'mp3', 'wav', 'ogg', 'aac', 'opus'];
+
+    if (!validTypes.includes(file.type) && !validExts.includes(ext || '')) {
+      setError('Unsupported format. Use MP3, M4A, WAV, WebM, or MP4 audio.');
+      return;
+    }
+
+    if (file.size < 50000) {
+      setError('File too small — needs to be at least a 30-second recording.');
+      return;
+    }
+
+    if (file.size > 25 * 1024 * 1024) {
+      setError('File too large — maximum 25MB.');
+      return;
+    }
+
+    setError('');
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append('audio', file, file.name);
+
+    try {
+      await api.upload('/voice/upload', formData);
+      navigate('/onboarding/processing');
+    } catch (err) {
+      console.error('File upload failed:', err);
+      setError('Upload failed: ' + (err as Error).message);
+      setUploading(false);
+    }
+
+    // Reset file input so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
 
   // Timer
   useEffect(() => {
@@ -313,6 +357,30 @@ export function Recording() {
           <p className="mt-3" style={{ fontSize: 11, color: '#22c55e' }}>
             Great length. Hit Done whenever you're ready.
           </p>
+        )}
+
+        {/* Upload file option */}
+        {!isRecording && !uploading && (
+          <div className="mt-8 flex flex-col items-center">
+            <div className="flex items-center gap-3 mb-3" style={{ width: 200 }}>
+              <div style={{ flex: 1, height: 1, background: '#444' }} />
+              <span style={{ fontSize: 10, color: '#666', textTransform: 'uppercase', letterSpacing: '0.08em' }}>or</span>
+              <div style={{ flex: 1, height: 1, background: '#444' }} />
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="audio/*,.webm,.mp4,.m4a,.mp3,.wav,.ogg,.aac"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
+            <GhostButton variant="glass" size="sm" onClick={() => fileInputRef.current?.click()} icon={<Upload size={13} strokeWidth={1.5} />}>
+              Upload a recording
+            </GhostButton>
+            <p className="mt-2" style={{ fontSize: 10, color: '#555' }}>
+              MP3, M4A, WAV, WebM — max 25MB
+            </p>
+          </div>
         )}
       </div>
     </div>
