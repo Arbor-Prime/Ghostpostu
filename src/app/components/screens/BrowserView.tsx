@@ -39,20 +39,21 @@ export function BrowserView() {
 
     socket.on('connect', () => {
       setConnected(true);
-      addLog({ text: 'Connected to server', type: 'status' });
       socket.emit('browser:launch');
     });
 
     socket.on('browser:launched', (data: any) => {
       setLaunching(false);
-      if (data.success) {
-        addLog({ text: data.reused ? 'Reconnected to existing session' : 'Browser launched', type: 'success', icon: '✓' });
+      if (data.success && !data.reused) {
+        addLog({ text: 'Browser launched', type: 'success', icon: '✓' });
       }
     });
 
     socket.on('browser:streaming', () => {
-      setStreaming(true);
-      addLog({ text: 'Screen streaming active', type: 'success', icon: '✓' });
+      if (!streaming) {
+        setStreaming(true);
+        addLog({ text: 'Streaming', type: 'status', icon: '●' });
+      }
     });
 
     socket.on('browser:frame', (data: { data: string }) => {
