@@ -6,8 +6,11 @@ import { useAuth } from '../../lib/auth-context';
 import { api } from '../../lib/api';
 
 function MiniChart({ data }: { data?: number[] }) {
-  const d = data || [2, 5, 3, 7, 4, 8, 6, 9, 7, 11, 8, 10];
+  const d = data || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   const max = Math.max(...d);
+  if (max === 0) {
+    return <svg width="80" height="28" viewBox="0 0 80 28"><line x1="0" y1="24" x2="80" y2="24" stroke="#555" strokeWidth="1.5" strokeLinecap="round" /></svg>;
+  }
   const pts = d.map((v, i) => `${(i / (d.length - 1)) * 80},${28 - (v / max) * 24}`).join(' ');
   return <svg width="80" height="28" viewBox="0 0 80 28"><polyline points={pts} fill="none" stroke="#d4a853" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
@@ -43,15 +46,15 @@ export function Dashboard() {
   }, [user]);
 
   const stats = dashData ? [
-    { label: 'Tweets Scanned', value: dashData.stats.tweets_scanned?.toLocaleString() || '0', icon: Eye },
+    { label: 'Profiles Scanned', value: dashData.stats.tweets_scanned?.toLocaleString() || '0', icon: Eye },
     { label: 'Opportunities Found', value: dashData.stats.opportunities_found?.toLocaleString() || '0', icon: Lightbulb },
     { label: 'Drafts Pending', value: dashData.stats.drafts_pending?.toLocaleString() || '0', icon: FileText },
-    { label: 'Replies Posted', value: dashData.stats.replies_posted?.toLocaleString() || '0', icon: Send },
+    { label: 'Messages Sent', value: dashData.stats.replies_posted?.toLocaleString() || '0', icon: Send },
   ] : [
-    { label: 'Tweets Scanned', value: loading ? '...' : '0', icon: Eye },
+    { label: 'Profiles Scanned', value: loading ? '...' : '0', icon: Eye },
     { label: 'Opportunities Found', value: loading ? '...' : '0', icon: Lightbulb },
     { label: 'Drafts Pending', value: loading ? '...' : '0', icon: FileText },
-    { label: 'Replies Posted', value: loading ? '...' : '0', icon: Send },
+    { label: 'Messages Sent', value: loading ? '...' : '0', icon: Send },
   ];
 
   const chartData = dashData?.chart?.length ? dashData.chart : [
