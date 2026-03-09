@@ -145,7 +145,19 @@ export function BrowserView() {
     const socket = socketRef.current;
     if (!socket) return;
     e.preventDefault();
+    // Don't send Ctrl+V as keystrokes — paste handler deals with it
+    if ((e.ctrlKey || e.metaKey) && e.key === 'v') return;
     socket.emit('browser:key', { type: e.type, key: e.key, code: e.code, keyCode: e.keyCode, altKey: e.altKey, ctrlKey: e.ctrlKey, metaKey: e.metaKey, shiftKey: e.shiftKey });
+  }, []);
+
+  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLCanvasElement>) => {
+    const socket = socketRef.current;
+    if (!socket) return;
+    e.preventDefault();
+    const text = e.clipboardData.getData('text');
+    if (text) {
+      socket.emit('browser:paste', { text });
+    }
   }, []);
 
   const handleNav = (action: string) => {
@@ -403,6 +415,7 @@ export function BrowserView() {
               onWheel={handleWheel}
               onKeyDown={handleKey}
               onKeyUp={handleKey}
+              onPaste={handlePaste}
             />
           </div>
         </div>
