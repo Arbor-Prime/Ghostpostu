@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, RotateCw, X, Monitor, Loader2, ExternalLink,
 import { io, Socket } from 'socket.io-client';
 import { GhostPostLogo } from '../layout/GhostPostLogo';
 import { GhostButton } from '../ui/GhostButton';
+import { useAuth } from '../../lib/auth-context';
 
 interface LogEntry {
   icon?: string;
@@ -15,6 +16,7 @@ export function BrowserView() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const socketRef = useRef<Socket | null>(null);
   const imgRef = useRef(new Image());
+  const { user } = useAuth();
 
   const [connected, setConnected] = useState(false);
   const [streaming, setStreaming] = useState(false);
@@ -24,6 +26,8 @@ export function BrowserView() {
   const [urlInput, setUrlInput] = useState('');
   const [activityLog, setActivityLog] = useState<LogEntry[]>([]);
   const [frameCount, setFrameCount] = useState(0);
+  const [chatInput, setChatInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
 
   const addLog = useCallback((entry: Omit<LogEntry, 'time'>) => {
     setActivityLog(prev => [...prev, { ...entry, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }]);
@@ -82,6 +86,15 @@ export function BrowserView() {
       setError(data.message);
       setLaunching(false);
       addLog({ text: data.message, type: 'error' });
+    });
+
+    socket.on('chat:response', (data: { response: string; browserAction?: any }) => {
+      setIsThinking(false);
+      addLog({ text: data.response, type: 'status', icon: '🤖' });
+    });
+
+    socket.on('chat:thinking', (data: { active: boolean }) => {
+      setIsThinking(data.active);
     });
 
     socket.on('browser:closed', () => {
@@ -158,6 +171,15 @@ export function BrowserView() {
     socketRef.current = null;
     setStreaming(false);
     setConnected(false);
+  };
+
+  const handleChatSend = () => {
+    const socket = socketRef.current;
+    if (!socket || !chatInput.trim() || !user?.id) return;
+    const msg = chatInput.trim();
+    addLog({ text: msg, type: 'action', icon: '💬' });
+    socket.emit('chat:message', { message: msg, userId: user.id });
+    setChatInput('');
   };
 
   // Not launched — show launch screen
@@ -250,9 +272,28 @@ export function BrowserView() {
           {/* Message input */}
           <div style={{ padding: '10px 16px', borderTop: '1px solid #444' }}>
             <div className="flex items-center gap-2" style={{ background: '#383838', borderRadius: 8, padding: '8px 12px', border: '1px solid #4a4a4a' }}>
-              <Paperclip size={13} strokeWidth={1.5} style={{ color: '#888' }} />
-              <input type="text" placeholder="Message GhostPost" className="flex-1 bg-transparent border-none outline-none placeholder:text-[#666] text-[#e5e5e5]" style={{ fontSize: 12 }} />
+              <input
+                type="text"
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleChatSend()}
+                placeholder={isThinking ? 'Thinking...' : 'Ask GhostPost — "find cafes in Nottingham"'}
+                disabled={isThinking}
+                className="flex-1 bg-transparent border-none outline-none placeholder:text-[#666] text-[#e5e5e5]"
+                style={{ fontSize: 12 }}
+              />
+              {chatInput.trim() && (
+                <div onClick={handleChatSend} className="flex items-center justify-center cursor-pointer" style={{ width: 24, height: 24, borderRadius: 6, background: '#d4a853' }}>
+                  <Check size={12} strokeWidth={2.5} style={{ color: '#1a1a1a' }} />
+                </div>
+              )}
             </div>
+            {isThinking && (
+              <div className="flex items-center gap-2 mt-2 ml-1">
+                <Loader2 size={11} className="text-[#d4a853] animate-spin" />
+                <span style={{ fontSize: 10, color: '#d4a853' }}>GhostPost is thinking...</span>
+              </div>
+            )}
           </div>
         </div>
 
