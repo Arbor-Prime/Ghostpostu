@@ -28,6 +28,8 @@ export function BrowserView() {
   const [frameCount, setFrameCount] = useState(0);
   const [chatInput, setChatInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [panelWidth, setPanelWidth] = useState(360);
+  const isDragging = useRef(false);
 
   const addLog = useCallback((entry: Omit<LogEntry, 'time'>) => {
     setActivityLog(prev => [...prev, { ...entry, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }]);
@@ -182,6 +184,32 @@ export function BrowserView() {
     setChatInput('');
   };
 
+  const handleDragStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    const startX = e.clientX;
+    const startWidth = panelWidth;
+
+    const onMove = (e: MouseEvent) => {
+      if (!isDragging.current) return;
+      const newWidth = Math.max(240, Math.min(600, startWidth + (e.clientX - startX)));
+      setPanelWidth(newWidth);
+    };
+
+    const onUp = () => {
+      isDragging.current = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }, [panelWidth]);
+
   // Not launched — show launch screen
   if (!connected && !launching) {
     return (
@@ -230,32 +258,33 @@ export function BrowserView() {
       <div className="flex-1 flex min-h-0">
 
         {/* LEFT: Activity Log */}
-        <div className="w-[320px] flex flex-col min-h-0 shrink-0" style={{ borderRight: '1px solid #444' }}>
+        <div className="flex flex-col min-h-0 shrink-0" style={{ width: panelWidth, borderRight: '1px solid #444' }}>
           <div style={{ padding: '14px 16px', borderBottom: '1px solid #444' }}>
             <h3 style={{ fontSize: 13, fontWeight: 700, color: '#e5e5e5' }}>GhostPost Computer</h3>
             <p style={{ fontSize: 11, color: '#888', marginTop: 2 }}>Activity log</p>
           </div>
 
           <div className="flex-1 overflow-auto" style={{ padding: '12px 16px' }}>
-            <div className="space-y-1.5">
+            <div className="space-y-3">
               {activityLog.map((entry, i) => (
-                <div key={i} className="flex items-start gap-2">
+                <div key={i} className="flex items-start gap-2.5">
                   {(entry.type === 'action' || entry.type === 'success' || entry.type === 'error') && (
                     <div className="flex items-center justify-center shrink-0 mt-0.5" style={{
-                      width: 20, height: 20, borderRadius: 6,
+                      width: 22, height: 22, borderRadius: 6,
                       background: entry.type === 'success' ? 'rgba(34,197,94,0.12)' : entry.type === 'error' ? 'rgba(239,68,68,0.12)' : '#444',
                       border: entry.type === 'success' ? '1px solid rgba(34,197,94,0.2)' : entry.type === 'error' ? '1px solid rgba(239,68,68,0.2)' : '1px solid #555',
                     }}>
-                      {entry.type === 'success' ? <Check size={9} strokeWidth={2.5} className="text-[#22c55e]" /> :
-                       entry.icon ? <span style={{ fontSize: 8, color: '#999' }}>{entry.icon}</span> : null}
+                      {entry.type === 'success' ? <Check size={10} strokeWidth={2.5} className="text-[#22c55e]" /> :
+                       entry.icon ? <span style={{ fontSize: 10 }}>{entry.icon}</span> : null}
                     </div>
                   )}
-                  <div style={{ marginLeft: entry.type === 'status' ? 28 : 0 }}>
+                  <div style={{ marginLeft: entry.type === 'status' ? 30 : 0, flex: 1 }}>
                     <span style={{
-                      fontSize: 11,
-                      color: entry.type === 'success' ? '#22c55e' : entry.type === 'error' ? '#f87171' : entry.type === 'status' ? '#888' : '#ccc',
-                      fontWeight: entry.type === 'success' ? 600 : 400,
-                      lineHeight: 1.5,
+                      fontSize: 13,
+                      color: entry.type === 'success' ? '#22c55e' : entry.type === 'error' ? '#f87171' : entry.type === 'action' ? '#e5e5e5' : '#cccccc',
+                      fontWeight: entry.type === 'action' ? 600 : 400,
+                      lineHeight: 1.55,
+                      display: 'block',
                     }}>{entry.text}</span>
                   </div>
                 </div>
@@ -295,6 +324,15 @@ export function BrowserView() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* DRAG HANDLE */}
+        <div
+          onMouseDown={handleDragStart}
+          className="shrink-0 flex items-center justify-center cursor-col-resize hover:bg-[rgba(212,168,83,0.1)] transition-colors"
+          style={{ width: 8, background: 'transparent' }}
+        >
+          <div style={{ width: 3, height: 40, borderRadius: 2, background: '#555' }} />
         </div>
 
         {/* RIGHT: Browser */}
