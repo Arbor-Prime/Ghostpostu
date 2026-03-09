@@ -25,21 +25,15 @@ export function Dashboard() {
     api.get('/stats/dashboard')
       .then(setDashData)
       .catch(() => {
-        // Fallback: try individual endpoints
-        Promise.all([
-          api.get('/observer/stats').catch(() => ({})),
-          api.get('/opportunities/stats').catch(() => ({})),
-          api.get('/posted/stats').catch(() => ({})),
-        ]).then(([obs, opps, posted]) => {
-          setDashData({
-            stats: {
-              tweets_scanned: parseInt(obs.queue?.completed || '0'),
-              opportunities_found: parseInt(opps.total || '0'),
-              drafts_pending: parseInt(opps.drafted || '0'),
-              replies_posted: parseInt(posted.total_posted || '0'),
-            },
-            chart: [],
-          });
+        // /stats/dashboard doesn't exist yet — show zeros rather than global data
+        setDashData({
+          stats: {
+            tweets_scanned: 0,
+            opportunities_found: 0,
+            drafts_pending: 0,
+            replies_posted: 0,
+          },
+          chart: [],
         });
       })
       .finally(() => setLoading(false));
