@@ -1,6 +1,5 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, redirect } from 'react-router';
 import { AppLayout } from './components/layout/AppLayout';
-import { MarketingHome } from './components/screens/MarketingHome';
 import { Login } from './components/screens/Login';
 import { Signup } from './components/screens/Signup';
 import { Welcome } from './components/screens/Welcome';

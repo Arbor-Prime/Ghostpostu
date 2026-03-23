@@ -380,13 +380,34 @@ export function Settings() {
         {activeCategory === 'voice-profile' && (
           <div className="max-w-lg">
             <h2 className="mb-6" style={{ fontSize: 18, fontWeight: 800, color: '#e5e5e5', letterSpacing: '-0.02em' }}>Voice Profile</h2>
-            <div style={{ background: '#383838', borderRadius: 14, padding: '18px 20px', marginBottom: 20, border: '1px solid #4a4a4a' }}>
-              <p style={{ fontSize: 13, color: '#cccccc', fontStyle: 'italic', lineHeight: 1.6, marginBottom: 14 }}>"Casual, warm, direct communicator with a preference for short sentences and occasional humour."</p>
-              <div className="flex gap-2">
-                {['Casual', 'Direct', 'Witty'].map((t) => <span key={t} style={{ fontSize: 11, fontWeight: 600, color: '#d4a853', background: 'rgba(212,168,83,0.1)', borderRadius: 20, padding: '4px 12px' }}>{t}</span>)}
+            {voiceStatus === 'loading' && (
+              <p style={{ fontSize: 13, color: '#999' }}>Loading voice profile...</p>
+            )}
+            {voiceStatus === 'processing' && (
+              <div style={{ background: '#383838', borderRadius: 14, padding: '18px 20px', marginBottom: 20, border: '1px solid #4a4a4a' }}>
+                <p style={{ fontSize: 13, color: '#d4a853', marginBottom: 6 }}>Your voice is being analysed.</p>
+                <p style={{ fontSize: 12, color: '#999' }}>This usually takes 30-90 seconds. Refresh shortly.</p>
               </div>
-            </div>
-            <GhostButton variant="glass" size="md" icon={<Pencil size={13} strokeWidth={1.5} />}>Edit Profile</GhostButton>
+            )}
+            {voiceStatus === 'not-recorded' && (
+              <div style={{ background: '#383838', borderRadius: 14, padding: '18px 20px', marginBottom: 20, border: '1px solid #4a4a4a' }}>
+                <p style={{ fontSize: 13, color: '#999', marginBottom: 10 }}>No voice profile yet.</p>
+                <p style={{ fontSize: 12, color: '#777' }}>Complete voice onboarding to build your Voice DNA.</p>
+              </div>
+            )}
+            {voiceStatus === 'ready' && voiceProfile && (
+              <>
+                <div style={{ background: '#383838', borderRadius: 14, padding: '18px 20px', marginBottom: 20, border: '1px solid #4a4a4a' }}>
+                  {voiceProfile.summary_quote && (
+                    <p style={{ fontSize: 13, color: '#cccccc', fontStyle: 'italic', lineHeight: 1.6, marginBottom: 14 }}>"{voiceProfile.summary_quote}"</p>
+                  )}
+                  <div className="flex flex-wrap gap-2">
+                    {(voiceProfile.signature_words || []).slice(0, 5).map((t: string) => <span key={t} style={{ fontSize: 11, fontWeight: 600, color: '#d4a853', background: 'rgba(212,168,83,0.1)', borderRadius: 20, padding: '4px 12px' }}>{t}</span>)}
+                  </div>
+                </div>
+                <GhostButton variant="glass" size="md" icon={<Pencil size={13} strokeWidth={1.5} />}>Edit Profile</GhostButton>
+              </>
+            )}
             <div className="mt-8 pt-6" style={{ borderTop: '1px solid #444444' }}>
               <h3 className="mb-2" style={{ fontSize: 14, fontWeight: 700, color: '#ef4444' }}>Danger Zone</h3>
               <p className="mb-4" style={{ fontSize: 12, color: '#999999' }}>Resetting your voice profile will delete all learned patterns and require a new recording.</p>
@@ -452,10 +473,14 @@ export function Settings() {
                     <span style={{ fontSize: 11, color: '#22c55e' }}>Connected as @johndoe</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 6px rgba(34,197,94,0.4)' }} />
-                  <span style={{ fontSize: 12, fontWeight: 500, color: '#22c55e' }}>Active</span>
-                </div>
+                {connectionStatus ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 6px rgba(34,197,94,0.4)' }} />
+                    <span style={{ fontSize: 12, fontWeight: 500, color: '#22c55e' }}>Active</span>
+                  </div>
+                ) : (
+                  <span style={{ fontSize: 11, fontWeight: 500, color: '#888', background: '#444', borderRadius: 20, padding: '4px 12px' }}>Set up</span>
+                )}
               </div>
             </div>
 
@@ -470,10 +495,9 @@ export function Settings() {
             <div style={{ background: '#383838', borderRadius: 14, padding: '18px 20px', border: '1px solid #4a4a4a' }}>
               <div className="flex items-center justify-between mb-3">
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#e5e5e5' }}>Current Plan</span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#d4a853', background: 'rgba(212,168,83,0.1)', borderRadius: 20, padding: '4px 12px' }}>Pro</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#22c55e', background: 'rgba(34,197,94,0.1)', borderRadius: 20, padding: '4px 12px' }}>Beta</span>
               </div>
-              <p className="mb-4" style={{ fontSize: 12, color: '#999999' }}>Your next billing date is April 7, 2026. You'll be charged £29/month.</p>
-              <GhostButton variant="glass" size="md" icon={<CreditCard size={13} strokeWidth={1.5} />}>Manage Subscription</GhostButton>
+              <p style={{ fontSize: 12, color: '#999999' }}>You're on the free beta. Paid plans coming soon.</p>
             </div>
           </div>
         )}

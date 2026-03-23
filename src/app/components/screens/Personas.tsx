@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { api } from '../../lib/api';
+import { useAuth } from '../../lib/auth-context';
 
 const PERSONA_WINDOWS = [
   { name: 'Early Riser', hours: [5, 6], time: '05:00 – 07:00', color: '#e89aad', traits: ['Calm', 'Brief'] },
@@ -14,6 +15,7 @@ const PERSONA_WINDOWS = [
 ];
 
 export function Personas() {
+  const { user } = useAuth();
   const [circadianData, setCircadianData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

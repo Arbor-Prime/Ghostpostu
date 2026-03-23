@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { Send, Loader2 } from 'lucide-react';
 import { GhostButton } from '../ui/GhostButton';
 import { api } from '../../lib/api';
+import { useAuth } from '../../lib/auth-context';
 
 export function AIComposition() {
+  const { user } = useAuth();
   const [topics, setTopics] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [prompt, setPrompt] = useState('');

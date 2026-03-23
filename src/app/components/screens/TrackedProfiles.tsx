@@ -35,11 +35,23 @@ export function TrackedProfiles() {
 
   useEffect(() => { fetchProfiles(); }, [user]);
 
+  const [showAdd, setShowAdd] = useState(false);
+  const [newHandle, setNewHandle] = useState('');
+  const [adding, setAdding] = useState(false);
+
   const handleAdd = async () => {
-    const handle = prompt('Enter X handle (without @):');
-    if (!handle || !user) return;
-    await api.post('/tracked-profiles', { x_handle: handle });
-    fetchProfiles();
+    if (!newHandle.trim() || !user) return;
+    setAdding(true);
+    try {
+      await api.post('/tracked-profiles', { x_handle: newHandle.trim().replace('@', '') });
+      setNewHandle('');
+      setShowAdd(false);
+      fetchProfiles();
+    } catch (err) {
+      console.error('Failed to add profile:', err);
+    } finally {
+      setAdding(false);
+    }
   };
 
   const handleScan = async (id: number) => {
@@ -52,9 +64,32 @@ export function TrackedProfiles() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-5">
-        <GhostButton variant="gold" size="md" icon={<Plus size={14} strokeWidth={2.5} />} onClick={handleAdd}>
+        <GhostButton variant="gold" size="md" icon={<Plus size={14} strokeWidth={2.5} />} onClick={() => setShowAdd(!showAdd)}>
           Add Profile
         </GhostButton>
+        {showAdd && (
+          <div className="flex items-center gap-2">
+            <span style={{ fontSize: 12, color: '#999' }}>@</span>
+            <input
+              type="text"
+              value={newHandle}
+              onChange={(e) => setNewHandle(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+              placeholder="handle"
+              autoFocus
+              className="placeholder:text-[#777] text-[#e5e5e5] focus:outline-none"
+              style={{ background: '#3a3a3a', border: '1px solid #4a4a4a', borderRadius: 8, padding: '6px 12px', fontSize: 12, width: 160 }}
+              onFocus={(e) => e.target.style.borderColor = '#d4a853'}
+              onBlur={(e) => e.target.style.borderColor = '#4a4a4a'}
+            />
+            <GhostButton variant="gold" size="sm" onClick={handleAdd} disabled={adding || !newHandle.trim()}>
+              {adding ? '...' : 'Add'}
+            </GhostButton>
+            <GhostButton variant="glass" size="sm" onClick={() => { setShowAdd(false); setNewHandle(''); }}>
+              Cancel
+            </GhostButton>
+          </div>
+        )}
         <div className="flex-1 max-w-xs relative">
           <Search size={14} strokeWidth={1.5} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search profiles..."
