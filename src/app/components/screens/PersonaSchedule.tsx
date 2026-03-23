@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import { GhostPostLogo } from '../layout/GhostPostLogo';
 import { GhostButton } from '../ui/GhostButton';
+import { api } from '../../lib/api';
 
 const personas = [
   { name: 'Early Riser', time: '05:00 – 07:00', desc: 'Quiet, reflective, still waking up. Low energy, minimal engagement.', energy: 25, tones: ['Calm', 'Brief'], color: '#e89aad' },
@@ -77,7 +78,13 @@ export function PersonaSchedule() {
           <GhostButton
             variant="gold"
             size="lg"
-            onClick={async () => { try { await fetch('/api/auth/onboarding-complete', { method: 'PATCH', credentials: 'include' }); } catch(e) {} navigate('/dashboard'); }}
+            onClick={async () => {
+              try {
+                await api.post('/persona/generate');
+                await api.patch('/auth/onboarding-complete');
+              } catch (e) {}
+              navigate('/dashboard');
+            }}
             iconRight={<ArrowRight size={14} strokeWidth={2.5} />}
           >
             Generate schedule

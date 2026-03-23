@@ -16,27 +16,32 @@ import { Personas } from './components/screens/Personas';
 import { AIComposition } from './components/screens/AIComposition';
 import { Simulation } from './components/screens/Simulation';
 import { Settings } from './components/screens/Settings';
+import { DMApprovals } from './components/screens/DMApprovals';
+import { DMConversations } from './components/screens/DMConversations';
+import { DMConversationDetail } from './components/screens/DMConversationDetail';
+import { NewConversation } from './components/screens/NewConversation';
 
 export const router = createBrowserRouter([
-  // Public routes (no auth required)
   { path: '/', Component: MarketingHome },
   { path: '/login', Component: Login },
   { path: '/signup', Component: Signup },
 
-  // Onboarding routes (auth required, no sidebar)
   { path: '/onboarding/welcome', Component: Welcome },
   { path: '/onboarding/recording', Component: Recording },
   { path: '/onboarding/processing', Component: Processing },
   { path: '/onboarding/voice-profile', Component: VoiceProfile },
   { path: '/onboarding/persona-schedule', Component: PersonaSchedule },
 
-  // Main app routes (auth required, sidebar layout)
   {
     Component: AppLayout,
     children: [
       { path: '/dashboard', Component: Dashboard },
       { path: '/browser', Component: BrowserView },
       { path: '/approvals', Component: Approvals },
+      { path: '/dm-approvals', Component: DMApprovals },
+      { path: '/dm-conversations', Component: DMConversations },
+      { path: '/dm-conversations/new', Component: NewConversation },
+      { path: '/dm-conversations/:id', Component: DMConversationDetail },
       { path: '/tracked-profiles', Component: TrackedProfiles },
       { path: '/personas', Component: Personas },
       { path: '/ai-composition', Component: AIComposition },

@@ -89,22 +89,25 @@ export function Recording() {
     await new Promise(r => setTimeout(r, 300));
 
     if (chunksRef.current.length === 0) {
-      navigate('/onboarding/processing');
+      setError('No recording. Record at least a few seconds and click Done.');
       return;
     }
 
     setUploading(true);
+    setError('');
     const blob = new Blob(chunksRef.current, { type: mediaRecorderRef.current?.mimeType || 'audio/webm' });
     const formData = new FormData();
     formData.append('audio', blob, 'recording.webm');
     formData.append('userId', String(user?.id));
 
-    navigate('/onboarding/processing');
-
     try {
       await api.upload('/voice/upload', formData);
+      navigate('/onboarding/processing');
     } catch (err) {
       console.error('Voice upload failed:', err);
+      setError('Upload failed. Please try again.');
+    } finally {
+      setUploading(false);
     }
   };
 

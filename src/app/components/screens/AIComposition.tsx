@@ -23,7 +23,7 @@ export function AIComposition() {
     setDraft('');
     try {
       const result = await api.post('/drafts/generate', { prompt: prompt.trim() });
-      setDraft(result.replyText || result.text || 'Draft generated — check Approvals.');
+      setDraft(result.draft?.replyText || result.replyText || result.text || 'Draft generated — check Approvals.');
     } catch (err: any) {
       setDraft('Generation failed: ' + err.message);
     } finally {
